@@ -87,6 +87,10 @@ def check_conditions(config: dict, ad: dict) -> bool:
         if ad_model not in config["allowed_models"]:
             return False
 
+    if config["not_allowed_models"] is not None:
+        ad_model = ad["vipUrl"].split("/")[3]
+        if ad_model in config["not_allowed_models"]:
+            return False
     return True
 
 
