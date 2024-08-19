@@ -1,4 +1,4 @@
-from tools.utils import translate_to_english, calculate_driving_distance, NIJMEGEN, LEUVEN
+from tools.utils import translate_to_english, calculate_driving_distance, LEUVEN
 
 
 def create_cars_bot_message(car: dict, config: dict):
@@ -11,7 +11,6 @@ def create_cars_bot_message(car: dict, config: dict):
     city = car["location"].get("cityName", "N/A")
     country = car["location"].get("countryName", "N/A")
 
-    distance_nijmegen = calculate_driving_distance(NIJMEGEN, (lat, long))
     distance_leuven = calculate_driving_distance(LEUVEN, (lat, long))
 
     car_attributes = {attr["key"]: attr["value"] for attr in car["attributes"]}
@@ -23,7 +22,7 @@ def create_cars_bot_message(car: dict, config: dict):
     message += f"🚘 Title: {translate_to_english(car['title'])}\n"
     message += f"💰 Price: €{price_euro} ({price_type})\n"
     message += f"📍 Location: {city}, {country}\n"
-    message += f"📍 Distance Nijmegen: {distance_nijmegen:.2f} km, Leuven: {distance_leuven:.2f} km\n"
+    message += f"📍 Distance Leuven: {distance_leuven:.2f} km\n"
     message += f"🗒️ Description: {translate_to_english(car['categorySpecificDescription'])}\n"
     message += f"📅 Year: {car_attributes.get('constructionYear')}\n"
     message += f"🛣️ Km: {car_attributes.get('mileage', 'N/A')} km\n"
