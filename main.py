@@ -8,7 +8,7 @@ from random import randint
 from config import config
 from tools.secrets import BOT_TOKEN
 from tools.utils import create_urls, send_telegram_message, console
-from tools.utils import get_int_from_itemId, validate_config, calculate_driving_distance, NIJMEGEN, LEUVEN
+from tools.utils import get_int_from_itemId, validate_config, calculate_driving_distance, NIJMEGEN, LEUVEN, TWINGE
 # from _utils import send_errors_to_all_chats
 
 LIMIT = 100
