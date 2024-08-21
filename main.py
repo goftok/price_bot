@@ -81,6 +81,14 @@ def check_conditions(config: dict, ad: dict) -> bool:
         if distance_leuven <= config["max_distance_leuven"]:
             return False
 
+    # check the max distance to Tielt Winge
+    if config["max_distance_romacik"] is not None:
+        ad_lat = ad["location"]["latitude"]
+        ad_long = ad["location"]["longitude"]
+        distance_twinge = int(calculate_driving_distance(TWINGE, (ad_lat, ad_long)))
+        if distance_twinge <= config["max_distance_romacik"]:
+            return False
+            
     # check if the model of is allowed (for car)
     if config["allowed_models"] is not None:
         ad_model = ad["vipUrl"].split("/")[3]
