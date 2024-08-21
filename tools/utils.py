@@ -7,6 +7,7 @@ from tools.secrets import BOT_TOKEN, CHAT_ID1, CHAT_ID2, CHAT_ID3
 NIJMEGEN = (51.8433, 5.8609)
 LEUVEN = (50.8823, 4.7138)
 HERENT = (50.9093, 4.6774)
+TWINGE = (50.9031,4.8757) 
 
 console = Console()
 translator_en = GoogleTranslator(source="auto", target="en")
@@ -23,6 +24,7 @@ template_config = {
     "api_link": str,
     "max_distance_nijmegen": (type(None), int),
     "max_distance_leuven": (type(None), int),
+    "max_destance_romacik": (type(None), int),
     "query_params": dict,
 }
 
