@@ -16,6 +16,7 @@ config = {
         "api_link": "https://www.2dehands.be/lrp/api/search",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
+        "max_distance_romacik": 60,
         "query_params": {
             "attributesById": ["10898"],
             "attributesByKey": ["offeredSince:Vandaag"],
@@ -37,6 +38,7 @@ config = {
    #     "api_link": "https://www.marktplaats.nl/lrp/api/search",
    #    "max_distance_nijmegen": None,
    #     "max_distance_leuven": None,
+   #     "max_distance_romacik": None,
    #     "query_params": {
    #         "attributesById": ["10898"],
    #         "attributesByKey": ["offeredSince:Vandaag"],
@@ -56,6 +58,7 @@ config = {
         "url_numbers": 5,
         "function_for_message": create_cars_bot_message,
         "api_link": "https://www.2dehands.be/lrp/api/search",
+        "max_distance_romacik": None,
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
         "query_params": {
@@ -78,6 +81,7 @@ config = {
    #     "api_link": "https://www.marktplaats.nl/lrp/api/search",
    #     "max_distance_nijmegen": None,
    #     "max_distance_leuven": None,
+   #     "max_distance_romacik": None,
    #     "query_params": {
    #         "attributesById": ["10898"],
    #         "attributesByKey": ["offeredSince:Vandaag"],
@@ -98,6 +102,7 @@ config = {
         "api_link": "https://www.2dehands.be/lrp/api/search",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
+        "max_distance_romacik": None,
         "query_params": {
             "attributesById": ["10898"],
             "attributesByKey": ["offeredSince:Vandaag"],
@@ -118,6 +123,7 @@ config = {
         "api_link": "https://www.2dehands.be/lrp/api/search",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
+        "max_distance_romacik": None,
         "query_params": {
             "attributesById": ["10882", "11917"],
             "attributesByKey": ["offeredSince:Vandaag"],
@@ -139,6 +145,7 @@ config = {
        "api_link": "https://www.marktplaats.nl/lrp/api/search",
        "max_distance_nijmegen": None,
        "max_distance_leuven": None,
+       "max_distance_romacik": None,
        "query_params": {
            "attributesById": ["10882", "11917"],
            "attributesByKey": ["offeredSince:Vandaag"],
