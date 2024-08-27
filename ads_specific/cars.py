@@ -1,4 +1,5 @@
 from tools.utils import translate_to_english, calculate_driving_distance, LEUVEN
+from tools.otomoto_utils import query_otomoto_and_get_average_price
 
 
 def create_cars_bot_message(car: dict, config: dict):
@@ -17,6 +18,14 @@ def create_cars_bot_message(car: dict, config: dict):
 
     model = car["vipUrl"].split("/")[3]
 
+    otomoto_url, price_str = query_otomoto_and_get_average_price(
+        make=model,
+        model=model,
+        year=car_attributes.get("constructionYear"),
+        mileage=car_attributes.get("mileage"),
+        fuel_type=car_attributes.get("fuel"),
+    )
+
     message = "🚗 **New Car Listing Found!**\n"
     message += f"#{model}\n"
     message += f"🚘 Title: {translate_to_english(car['title'])}\n"
@@ -27,5 +36,7 @@ def create_cars_bot_message(car: dict, config: dict):
     message += f"📅 Year: {car_attributes.get('constructionYear')}\n"
     message += f"🛣️ Km: {car_attributes.get('mileage', 'N/A')} km\n"
     message += f"⛽ Fuel: {car_attributes.get('fuel', 'N/A')}\n"
-    message += f'🔗 <a href="{listing_url}">View Listing</a>\n'
+    message += f"💸{price_str}\n"
+    message += f'🔗 <a href="{listing_url}">View Listing in 2dehands</a>\n'
+    message += f'🔗 <a href="{otomoto_url}">View Listing in Otomoto</a>\n'
     return message
