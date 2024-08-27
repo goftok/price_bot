@@ -10,11 +10,12 @@ from rich.console import Console
 console = Console()
 
 NUMBER_OF_RANDOM_OFFERS = 5
-YEAR_RANGE = 2
+YEAR_RANGE = 1
 PLN_EURO_EXCHANGE_RATE = 4.28
 LIMIT_OF_CHEAPEST_OFFERS = 8
 MILEAGE_RANGE = 30000
 OTOMOTO_SLEEP_TIME = 1
+COEFFICIENT = 2
 
 make_dict = {
     # TODO
@@ -60,13 +61,19 @@ def create_eval_price_url(advert_id: str) -> str:
 
 def create_otomoto_url(
     make: str,
-    model: str,
+    model: Optional[str],
     year: Optional[str],
     mileage: Optional[str],
     fuel_type: Optional[str],
+    coefficient: Optional[float] = 1,
 ):
     make = make.lower()
-    model = model.lower()
+
+    filters = [{"name": "filter_enum_make", "value": make}]
+
+    if model:
+        model = model.lower()
+        filters.append({"name": "filter_enum_model", "value": model})
 
     if year:
         if not isinstance(year, str):
@@ -97,19 +104,16 @@ def create_otomoto_url(
     # Base URL for the GraphQL API
     base_url = "https://www.otomoto.pl/graphql"
 
-    # Default filters
-    filters = [{"name": "filter_enum_make", "value": make}, {"name": "filter_enum_model", "value": model}]
-
     # Optional year filter
     if year:
-        year_from = year - YEAR_RANGE
-        year_to = year + YEAR_RANGE
+        year_from = year - (YEAR_RANGE * coefficient)
+        year_to = min(2025, year + (YEAR_RANGE * coefficient))
         filters.append({"name": "filter_float_year:from", "value": str(year_from)})
         filters.append({"name": "filter_float_year:to", "value": str(year_to)})
 
     if mileage:
-        mileage_from = mileage - MILEAGE_RANGE
-        mileage_to = mileage + MILEAGE_RANGE
+        mileage_from = max(0, mileage - (MILEAGE_RANGE * coefficient))
+        mileage_to = mileage + (MILEAGE_RANGE * coefficient)
         filters.append({"name": "filter_float_mileage:from", "value": str(mileage_from)})
         filters.append({"name": "filter_float_mileage:to", "value": str(mileage_to)})
 
@@ -123,6 +127,8 @@ def create_otomoto_url(
 
     # Fixed filters based on the example
     filters.extend([{"name": "order", "value": "filter_float_price:asc"}, {"name": "category_id", "value": "29"}])
+
+    # console.print(filters)
 
     # GraphQL variables
     variables = {
@@ -192,7 +198,7 @@ def get_average_price_str(offers: list) -> str:
 
     offers = offers[:LIMIT_OF_CHEAPEST_OFFERS]
 
-    random_offers = random.sample(offers, NUMBER_OF_RANDOM_OFFERS)
+    random_offers = random.sample(offers, min(NUMBER_OF_RANDOM_OFFERS, len(offers)))
 
     for offer in random_offers:
         advert_id = offer["node"]["id"]
@@ -206,6 +212,7 @@ def get_average_price_str(offers: list) -> str:
 
         time.sleep(OTOMOTO_SLEEP_TIME)
         data = response.json()
+
         lower_eval_price = data["data"]["priceEvaluationSingle"]
         higher_eval_price = data["data"]["priceEvaluationSingle"]
 
@@ -225,13 +232,18 @@ def get_average_price_str(offers: list) -> str:
         lower_price_list.append(lower_price)
         higher_price_list.append(higher_price)
 
-    lower_price_avg = sum(lower_price_list) / len(lower_price_list)
-    higher_price_avg = sum(higher_price_list) / len(higher_price_list)
+    if len(lower_price_list) == 0 or len(higher_price_list) == 0:
+        return "No price data available"
+
+    lower_price_avg = int(sum(lower_price_list) / len(lower_price_list))
+    higher_price_avg = int(sum(higher_price_list) / len(higher_price_list))
+
+    lower_price_avg_euro = int(lower_price_avg / PLN_EURO_EXCHANGE_RATE)
+    higher_price_avg_euro = int(higher_price_avg / PLN_EURO_EXCHANGE_RATE)
 
     return (
-        f"Average Otomoto price: "
-        f"EURO: {int(lower_price_avg/PLN_EURO_EXCHANGE_RATE)} - {int(higher_price_avg/PLN_EURO_EXCHANGE_RATE)}; "
-        f"PLN: {int(lower_price_avg)} - {int(higher_price_avg)}"
+        f"💸 Otomoto EURO: {lower_price_avg_euro}-{higher_price_avg_euro}\n"
+        f"💸 Otomoto PLN: {lower_price_avg}-{higher_price_avg}"
     )
 
 
@@ -239,12 +251,40 @@ def query_otomoto_and_get_average_price(
     make: str, model: str, year: Optional[int], mileage: Optional[int], fuel_type: Optional[str]
 ) -> tuple:
     api_url = create_otomoto_url(make=make, model=model, year=year, mileage=mileage, fuel_type=fuel_type)
-    # console.print(url)
+    # console.print(api_url)
 
     try:
         response = requests.get(api_url)
         response.raise_for_status()
         data = response.json()
+
+        if "data" not in data or data["data"] is None:
+            raise ValueError("No data returned in API response")
+        if "advertSearch" not in data["data"] or data["data"]["advertSearch"] is None:
+            raise ValueError("'advertSearch' field missing in API response")
+        if "totalCount" not in data["data"]["advertSearch"]:
+            raise ValueError("'totalCount' field missing in 'advertSearch'")
+
+        if data["data"]["advertSearch"]["totalCount"] < NUMBER_OF_RANDOM_OFFERS:
+            api_url = create_otomoto_url(
+                make=make,
+                model=model,
+                year=year,
+                mileage=mileage,
+                fuel_type=fuel_type,
+                coefficient=COEFFICIENT,
+            )
+            response = requests.get(api_url)
+            response.raise_for_status()
+            data = response.json()
+
+        if "data" not in data or data["data"] is None:
+            raise ValueError("No data returned in API response")
+        if "advertSearch" not in data["data"] or data["data"]["advertSearch"] is None:
+            raise ValueError("'advertSearch' field missing in API response")
+        if "edges" not in data["data"]["advertSearch"]:
+            raise ValueError("'edges' field missing in 'advertSearch'")
+
         edges = data["data"]["advertSearch"]["edges"]
         otomoto_url = data["data"]["advertSearch"]["url"]
     except Exception as e:
