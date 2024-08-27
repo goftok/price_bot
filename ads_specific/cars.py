@@ -1,4 +1,4 @@
-from tools.utils import translate_to_english, calculate_driving_distance, LEUVEN
+from tools.utils import translate_to_english, calculate_driving_distance, extract_year_from_ad, LEUVEN
 from tools.otomoto_utils import query_otomoto_and_get_average_price
 
 
@@ -12,16 +12,17 @@ def create_cars_bot_message(car: dict, config: dict):
     city = car["location"].get("cityName", "N/A")
     country = car["location"].get("countryName", "N/A")
 
-    distance_leuven = calculate_driving_distance(LEUVEN, (lat, long))
-
     car_attributes = {attr["key"]: attr["value"] for attr in car["attributes"]}
 
     make = car["vipUrl"].split("/")[3]
+    distance_leuven = calculate_driving_distance(LEUVEN, (lat, long))
+    year = car_attributes.get("constructionYear")
+    year_heristics = extract_year_from_ad(f"{car["title"]}. {car["categorySpecificDescription"]}")
 
     otomoto_url, price_str = query_otomoto_and_get_average_price(
         make=make,
         model=car_attributes.get("model"),
-        year=car_attributes.get("constructionYear"),
+        year=year if year else year_heristics,
         mileage=car_attributes.get("mileage"),
         fuel_type=car_attributes.get("fuel"),
     )
@@ -33,7 +34,7 @@ def create_cars_bot_message(car: dict, config: dict):
     message += f"📍 Location: {city}, {country}\n"
     message += f"📍 Distance Leuven: {distance_leuven:.2f} km\n"
     message += f"🗒️ Description: {translate_to_english(car['categorySpecificDescription'])}\n"
-    message += f"📅 Year: {car_attributes.get('constructionYear')}\n"
+    message += f"📅 Year: {year if year else year_heristics + ' (regex)'}\n"
     message += f"🛣️ Km: {car_attributes.get('mileage', 'N/A')} km\n"
     message += f"⛽ Fuel: {car_attributes.get('fuel', 'N/A')}\n"
     message += f"{price_str}\n"
