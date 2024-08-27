@@ -1,4 +1,5 @@
-from tools.utils import extract_year_from_ad, calculate_driving_distance, HERENT
+from tools.utils import calculate_driving_distance, HERENT
+from tools.utils import extract_year_from_ad, extract_mileage_from_ad
 from tools.otomoto_utils import query_otomoto_and_get_average_price
 
 
@@ -20,12 +21,13 @@ def create_cars2_bot_message(car: dict, config: dict):
     year = car_attributes.get("constructionYear")
     year_heristics = extract_year_from_ad(f"{car["title"]}. {car["categorySpecificDescription"]}")
     mileage = car_attributes.get("mileage")
+    mileage_heristics = extract_mileage_from_ad(f"{car["title"]}. {car["categorySpecificDescription"]}")
 
     otomoto_url, price_str = query_otomoto_and_get_average_price(
         make=make,
         model=model,
         year=year if year else year_heristics,
-        mileage=mileage,
+        mileage=mileage if mileage else mileage_heristics,
         fuel_type=car_attributes.get("fuel"),
     )
 
@@ -38,7 +40,7 @@ def create_cars2_bot_message(car: dict, config: dict):
     message += f"🗒️ Description: {car['categorySpecificDescription']}\n"
     message += f"🛞 Model: {model if model else 'N/A'}\n"
     message += f"📅 Year: {car_attributes.get('constructionYear')}\n"
-    message += f"🛣️ Km: {mileage + " km" if mileage else 'N/A'}\n"
+    message += f"🛣️ Km: {mileage + " km" if mileage else (mileage_heristics + ' km (regex)' if mileage_heristics else 'N/A')}\n"
     message += f"⛽ Fuel: {car_attributes.get('fuel', 'N/A')}\n"
     message += f"{price_str}\n"
     message += f'🔗 <a href="{listing_url}">View Listing in 2dehands</a>\n'

@@ -5,7 +5,7 @@ example_dict = {
     "itemId": "m2151186170",
     "title": "Volvo C70 cabriolet in goede staat",
     "description": "Volvo c70 cabriolet(zwart) 1997cc – 100kw - diesel – milieuklasse euro 4 bouwjaar 09/05/2008 160 000km inclusief windblocker zwart",
-    "categorySpecificDescription": "Volvo c70 cabriolet(zwart) 1997cc – 100kw - diesel – milieuklasse euro 4 bouwjaar 09/05/2008 160 000km inclusief windblocker zwart lederen interieur handgeschakeld – 6 versnellingen",
+    "categorySpecificDescription": "Volvo c70 cabriolet(zwart) 1997cc – 100kw - diesel – milieuklasse euro 4 bouwjaar 09/05/2008 160000km inclusief windblocker zwart lederen interieur handgeschakeld – 6 versnellingen",
     "thinContent": True,
     "priceInfo": {"priceCents": 530000, "priceType": "FIXED"},
     "location": {
@@ -103,3 +103,20 @@ def test_create_cars_bot_message2():
     message = create_cars_bot_message(example_dict_copy, config["cars_2dehands_1"])
     print(message)
     assert "Year: 2008 (regex)" in message
+
+
+def test_create_cars_bot_message3():
+    message = create_cars_bot_message(example_dict, config["cars_2dehands_1"])
+    print(message)
+    assert "Km: 160000 km\n" in message
+
+
+def test_create_cars_bot_message4():
+    example_dict_copy = example_dict.copy()
+    for attribute in example_dict_copy["attributes"]:
+        if attribute == {"key": "mileage", "value": "160000", "unit": "km", "values": ["160000"]}:
+            example_dict_copy["attributes"].remove(attribute)
+            break
+    message = create_cars_bot_message(example_dict_copy, config["cars_2dehands_1"])
+    print(message)
+    assert "Km: 160000 km (regex)" in message

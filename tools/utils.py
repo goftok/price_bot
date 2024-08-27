@@ -106,6 +106,26 @@ def extract_year_from_ad(text: str) -> str:
     return None
 
 
+def extract_mileage_from_ad(text: str) -> str:
+    # Regex pattern to capture mileage between 10,000 and 999,999
+    mileage_pattern = re.compile(
+        r"\b(?:\d{1,3}[.,])?\d{1,3}[.,]?\d{3}\s*(?:km|kms|KM|Km|Kms|KMs|kilometers|kilometres|k m)?\b", re.IGNORECASE
+    )
+
+    # Find all matches
+    matches = mileage_pattern.findall(text)
+
+    # Process matches to return the first valid mileage as an integer
+    for match in matches:
+        # Remove any non-numeric characters (like commas, dots, or spaces)
+        clean_mileage = re.sub(r"[^\d]", "", match)
+        if 10000 <= int(clean_mileage) <= 999999:
+            return str(int(clean_mileage))
+
+    # Return None if no valid mileage is found
+    return None
+
+
 def validate_config(config):
     for t_key, t_value in template_config.items():
         if t_key not in config:
