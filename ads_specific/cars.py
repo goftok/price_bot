@@ -34,7 +34,7 @@ def create_cars_bot_message(car: dict, config: dict):
     message += f"📍 Location: {city}, {country}\n"
     message += f"📍 Distance Leuven: {distance_leuven:.2f} km\n"
     message += f"🗒️ Description: {translate_to_english(car['categorySpecificDescription'])}\n"
-    message += f"📅 Year: {year if year else year_heristics + ' (regex)'}\n"
+    message += f"📅 Year: {year if year else (year_heristics + ' (regex)' if year_heristics else 'N/A')}\n"
     message += f"🛣️ Km: {car_attributes.get('mileage', 'N/A')} km\n"
     message += f"⛽ Fuel: {car_attributes.get('fuel', 'N/A')}\n"
     message += f"{price_str}\n"
