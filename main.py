@@ -9,12 +9,12 @@ from config import config
 from tools.secrets import BOT_TOKEN
 from tools.utils import create_urls, send_telegram_message, console
 from tools.utils import get_int_from_itemId, validate_config, calculate_driving_distance, NIJMEGEN, LEUVEN
-# from _utils import send_errors_to_all_chats
+from tools.utils import send_errors_to_all_chats
 
 LIMIT = 100
-SLEEP_TIME = 17  # seconds
+SLEEP_TIME = 5  # seconds
 RETRY_TIME = 60  # seconds
-MIN_WAIT_TIME = 120  # seconds
+MIN_WAIT_TIME = 60  # seconds
 ERROR_CODES = [502]  # 429
 
 
@@ -106,6 +106,8 @@ def send_ads(ads: list, config: dict) -> None:
                 f"Found ad: '{get_int_from_itemId(ad['itemId'])}' for "
                 f"'{config['source']}' with index of '{idx}' size: '{len(ads)}'"
             )
+            if idx > len(ads) * 0.9:
+                send_errors_to_all_chats(f"WARNING for '{config['source']}'! Ad found at '{idx}' size: '{len(ads)}. Increase number of urls to check.")
         filtered_ads.append(ad)
 
     sorted_ads = sorted(filtered_ads, key=lambda x: get_int_from_itemId(x["itemId"]), reverse=True)
