@@ -12,9 +12,9 @@ from tools.utils import get_int_from_itemId, validate_config, calculate_driving_
 from tools.utils import send_errors_to_all_chats
 
 LIMIT = 100
-SLEEP_TIME = 5  # seconds
+SLEEP_TIME = 17  # seconds
 RETRY_TIME = 60  # seconds
-MIN_WAIT_TIME = 60  # seconds
+MIN_WAIT_TIME = 120  # seconds
 ERROR_CODES = [502]  # 429
 
 
