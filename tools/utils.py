@@ -109,7 +109,7 @@ def extract_year_from_ad(text: str) -> str:
 def extract_mileage_from_ad(text: str) -> str:
     # Regex pattern to capture mileage between 10,000 and 999,999
     mileage_pattern = re.compile(
-        r"\b(?:\d{1,3}[.,])?\d{1,3}[.,]?\d{3}\s*(?:km|kms|KM|Km|Kms|KMs|kilometers|kilometres|k m)?\b", re.IGNORECASE
+        r"\b(?:\d{1,3}[., ])?\d{1,3}[., ]?\d{3}\s*(?:km|kms|KM|Km|Kms|KMs|kilometers|kilometres|k m)?\b", re.IGNORECASE
     )
 
     # Find all matches
