@@ -129,13 +129,60 @@ def test_extract_mileage_from_ad11():
     assert mileage == "286000"
 
 
-# def test_extract_mileage_from_ad12():
-#     ad_text = """
-#     Volvo c70 cabriolet(zwart) 1997cc – 100kw - diesel – milieuklasse euro 4 bouwjaar
-#     09/05/2008 160 000km inclusief windblocker zwart lederen interieur handgeschakeld –
-#     6 versnellingen
-#     """
+def test_extract_mileage_from_ad12():
+    ad_text = """
+    Volvo c70 cabriolet(zwart) 1997cc - 100kw - diesel - milieuklasse euro 4 bouwjaar
+    09/05/2008 160 000km inclusief windblocker zwart lederen interieur handgeschakeld –
+    6 versnellingen
+    """
 
-#     mileage = extract_mileage_from_ad(ad_text)
-#     print(mileage)
-#     assert mileage == "160000"
+    mileage = extract_mileage_from_ad(ad_text)
+    print(mileage)
+    assert mileage == "160000"
+
+
+def test_extract_mileage_from_ad13():
+    ad_text = """
+    For sale Volkswagen Passat 2009 276 000 automatic 2.0 Tdi 180 hp Euro 5 take
+    it with you or have it ready More info 0476 605 179 Price 3750 euros
+    """
+
+    mileage = extract_mileage_from_ad(ad_text)
+    print(mileage)
+    assert mileage == "276000"
+
+
+def test_extract_mileage_from_ad14():
+    ad_text = """
+    Hello for sale golf 5 look gti 19tdi 105ch year 2005 runs and drives very well
+    half line homologated 4 electric windows central locking remote control key
+    automatic headlight usb station esp rim with new tires sold with documents
+
+    """
+
+    mileage = extract_mileage_from_ad(ad_text)
+    print(mileage)
+    assert mileage is None
+
+
+def test_extract_mileage_from_ad15():
+    ad_text = """
+    Ford Mondeo mechanically perfect, some body damage, new tires, 600 euros for
+    information 0496 62 54 22
+
+    """
+
+    mileage = extract_mileage_from_ad(ad_text)
+    print(mileage)
+    assert mileage is None
+
+
+def test_extract_mileage_from_ad16():
+    ad_text = """
+    Bmw 2l diesel 150cv 520d year 2007 260,000 km car in perfect condition 0495497678
+    3300€ fixed price!
+    """
+
+    mileage = extract_mileage_from_ad(ad_text)
+    print(mileage)
+    assert mileage == "260000"

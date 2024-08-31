@@ -108,21 +108,30 @@ def extract_year_from_ad(text: str) -> str:
 
 def extract_mileage_from_ad(text: str) -> str:
     # Regex pattern to capture mileage between 10,000 and 999,999
-    mileage_pattern = re.compile(
-        r"\b(?:\d{1,3}[.,])?\d{1,3}[.,]?\d{3}\s*(?:km|kms|KM|Km|Kms|KMs|kilometers|kilometres|k m)?\b", re.IGNORECASE
-    )
+    main_regex = r"\b(?:\d{1,3}[.,])?\d{1,3}[.,]?\d{3}\s*(?:km|kms|KM|Km|Kms|KMs|kilometers|kilometres|k m)?\b"
 
-    # Find all matches
+    spaced_regex = r"\b\d{1,3}\s\d{3}\s*(?:km|kms|KM|Km|Kms|KMs|kilometers|kilometres|k m)?\b"
+
+    # Try to extract mileage using the main regex pattern
+    mileage = extract_mileage_using_regex(main_regex, text)
+
+    # If no mileage is found, try to extract mileage using the spaced regex pattern
+    if mileage is None:
+        mileage = extract_mileage_using_regex(spaced_regex, text)
+
+    return mileage
+
+
+def extract_mileage_using_regex(regex: str, text: str) -> str:
+    mileage_pattern = re.compile(regex, re.IGNORECASE)
     matches = mileage_pattern.findall(text)
+    console.print(matches)
 
-    # Process matches to return the first valid mileage as an integer
     for match in matches:
-        # Remove any non-numeric characters (like commas, dots, or spaces)
         clean_mileage = re.sub(r"[^\d]", "", match)
         if 10000 <= int(clean_mileage) <= 999999:
             return str(int(clean_mileage))
 
-    # Return None if no valid mileage is found
     return None
 
 
