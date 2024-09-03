@@ -18,7 +18,7 @@ OTOMOTO_SLEEP_TIME = 1
 COEFFICIENT = 2
 
 headers = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Accept-Language": "en-US,en;q=0.9,ru;q=0.8,pl;q=0.7",
@@ -272,7 +272,13 @@ def query_otomoto_and_get_average_price(
     try:
         response = requests.get(api_url, headers=headers)
         response.raise_for_status()
-        data = response.json()
+        try:
+            data = response.json()
+        except Exception as e:
+            print(response.status_code)
+            print(response.content)
+            print(response.text)
+            raise ValueError(f"Error parsing JSON: {e}")
 
         if "data" not in data or data["data"] is None:
             raise ValueError("No data returned in API response")

@@ -162,3 +162,4 @@ cython_debug/
 .DS_Store
 *.txt
 node_modules/
+test.py
