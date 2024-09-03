@@ -17,6 +17,24 @@ MILEAGE_RANGE = 30000
 OTOMOTO_SLEEP_TIME = 1
 COEFFICIENT = 2
 
+headers = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br, zstd",
+    "Accept-Language": "en-US,en;q=0.9,ru;q=0.8,pl;q=0.7",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+    "Priority": "u=0, i",
+    "Sec-CH-UA": '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+    "Sec-CH-UA-Mobile": "?0",
+    "Sec-CH-UA-Platform": '"macOS"',
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
+}
+
 make_dict = {
     # TODO
 }
@@ -162,7 +180,6 @@ def create_otomoto_url(
             "model",
             "version",
             "year",
-            "show_pir",
         ],
         "promotedInput": {},
         "searchTerms": None,
@@ -207,7 +224,7 @@ def get_average_price_str(offers: list) -> str:
         url = create_eval_price_url(advert_id)
         # console.print(url)
 
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
 
         time.sleep(OTOMOTO_SLEEP_TIME)
@@ -251,10 +268,9 @@ def query_otomoto_and_get_average_price(
     make: str, model: str, year: Optional[int], mileage: Optional[int], fuel_type: Optional[str]
 ) -> tuple:
     api_url = create_otomoto_url(make=make, model=model, year=year, mileage=mileage, fuel_type=fuel_type)
-    # console.print(api_url)
 
     try:
-        response = requests.get(api_url)
+        response = requests.get(api_url, headers=headers)
         response.raise_for_status()
         data = response.json()
 
@@ -274,7 +290,7 @@ def query_otomoto_and_get_average_price(
                 fuel_type=fuel_type,
                 coefficient=COEFFICIENT,
             )
-            response = requests.get(api_url)
+            response = requests.get(api_url, headers=headers)
             response.raise_for_status()
             data = response.json()
 

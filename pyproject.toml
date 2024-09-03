@@ -15,6 +15,7 @@ geopy = "^2.4.1"
 art = "^6.1"
 pre-commit = "^3.7.0"
 pytest = "^8.2.1"
+brotli = "^1.1.0"
 
 
 [build-system]

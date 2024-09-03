@@ -125,7 +125,6 @@ def extract_mileage_from_ad(text: str) -> str:
 def extract_mileage_using_regex(regex: str, text: str) -> str:
     mileage_pattern = re.compile(regex, re.IGNORECASE)
     matches = mileage_pattern.findall(text)
-    console.print(matches)
 
     for match in matches:
         clean_mileage = re.sub(r"[^\d]", "", match)
