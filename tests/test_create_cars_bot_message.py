@@ -4,8 +4,11 @@ from config import config
 example_dict = {
     "itemId": "m2151186170",
     "title": "Volvo C70 cabriolet in goede staat",
-    "description": "Volvo c70 cabriolet(zwart) 1997cc – 100kw - diesel – milieuklasse euro 4 bouwjaar 09/05/2008 160 000km inclusief windblocker zwart",
-    "categorySpecificDescription": "Volvo c70 cabriolet(zwart) 1997cc – 100kw - diesel – milieuklasse euro 4 bouwjaar 09/05/2008 160000km inclusief windblocker zwart lederen interieur handgeschakeld – 6 versnellingen",
+    "description": "Volvo c70 cabriolet(zwart) 1997cc - 100kw - diesel - milieuklasse"
+    " euro 4 bouwjaar 09/05/2008 160 000km inclusief windblocker zwart",
+    "categorySpecificDescription": "Volvo c70 cabriolet(zwart) 1997cc - 100kw - diesel"
+    " - milieuklasse euro 4 bouwjaar 09/05/2008 160000km inclusief windblocker zwart "
+    "lederen interieur handgeschakeld - 6 versnellingen",
     "thinContent": True,
     "priceInfo": {"priceCents": 530000, "priceType": "FIXED"},
     "location": {
@@ -21,7 +24,8 @@ example_dict = {
     },
     "date": "2024-08-27T08:39:39.758Z",
     "imageUrls": [
-        "//images.2dehands.com/api/v1/listing-twh-p/images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_82.jpg"
+        "//images.2dehands.com/api/v1/listing-twh-p/"
+        "images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_82.jpg"
     ],
     "sellerInformation": {
         "sellerId": 28632180,
@@ -75,11 +79,16 @@ example_dict = {
         {
             "id": 0,
             "mediaId": "",
-            "url": "https://images.2dehands.com/api/v1/listing-twh-p/images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_#.jpg",
-            "extraSmallUrl": "https://images.2dehands.com/api/v1/listing-twh-p/images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_14.jpg",
-            "mediumUrl": "https://images.2dehands.com/api/v1/listing-twh-p/images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_82.jpg",
-            "largeUrl": "https://images.2dehands.com/api/v1/listing-twh-p/images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_83.jpg",
-            "extraExtraLargeUrl": "https://images.2dehands.com/api/v1/listing-twh-p/images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_85.jpg",
+            "url": "https://images.2dehands.com/api/v1/listing-twh-p/"
+            "images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_#.jpg",
+            "extraSmallUrl": "https://images.2dehands.com/api/v1/listing-twh-p/"
+            "images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_14.jpg",
+            "mediumUrl": "https://images.2dehands.com/api/v1/listing-twh-p/"
+            "images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_82.jpg",
+            "largeUrl": "https://images.2dehands.com/api/v1/listing-twh-p/"
+            "images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_83.jpg",
+            "extraExtraLargeUrl": "https://images.2dehands.com/api/v1/listing-twh-p/"
+            "images/14/14e0418b-2cb6-43ad-97c4-4b621796be6d?rule=ecg_mp_eps$_85.jpg",
             "aspectRatio": {"width": 3, "height": 4},
         }
     ],

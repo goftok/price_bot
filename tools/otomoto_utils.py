@@ -17,9 +17,13 @@ MILEAGE_RANGE = 30000
 OTOMOTO_SLEEP_TIME = 1
 COEFFICIENT = 2
 
+BASE_URL = "https://www.otomoto.pl/graphql"
+
 headers = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)"
+    " Chrome/128.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
+    "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Accept-Language": "en-US,en;q=0.9,ru;q=0.8,pl;q=0.7",
     "Cache-Control": "no-cache",
@@ -40,19 +44,24 @@ make_dict = {
 }
 
 model_dict = {
+    "1 Reeks": "seria-1",
+    "2 Reeks": "seria-2",
+    "3 Reeks": "seria-3",
+    "4 Reeks": "seria-4",
+    "5 Reeks": "seria-5",
+    "6 Reeks": "seria-6",
+    "7 Reeks": "seria-7",
     # TODO
 }
 
 fuel_dict = {
     "Benzine": "petrol",
     "Diesel": "diesel",
+    # TODO
 }
 
 
 def create_eval_price_url(advert_id: str) -> str:
-    # Base URL for the GraphQL API
-    base_url = "https://www.otomoto.pl/graphql"
-
     # GraphQL variables with the advertDetailsId
     variables = {"advertDetailsId": advert_id}
 
@@ -70,7 +79,7 @@ def create_eval_price_url(advert_id: str) -> str:
 
     # Construct the URL without additional encoding
     url = (
-        f"{base_url}?operationName=getPriceEvaluationData&"
+        f"{BASE_URL}?operationName=getPriceEvaluationData&"
         f"variables={urllib.parse.quote(variables_encoded)}&"
         f"extensions={urllib.parse.quote(extensions_encoded)}"
     )
@@ -85,19 +94,25 @@ def create_otomoto_url(
     fuel_type: Optional[str],
     coefficient: Optional[float] = 1,
 ):
-    make = make.lower()
 
+    # Adding necessary make filter
+    make = make.lower()
     filters = [{"name": "filter_enum_make", "value": make}]
 
+    # Optional model filter
     if model:
-        model = model.lower()
+        if model in model_dict:
+            model = model_dict[model]
+        else:
+            model = model.lower()
         filters.append({"name": "filter_enum_model", "value": model})
 
+    # Optional year filter
     if year:
         if not isinstance(year, str):
             raise ValueError("Year type must be an string")
 
-        # check if it is possible tp convert to int
+        # check if it is possible t0 convert to int
         try:
             year = int(year)
         except ValueError:
@@ -106,6 +121,12 @@ def create_otomoto_url(
         if year < 1900 or year > 2025:
             raise ValueError("Year must be between 1900 and 2025")
 
+        year_from = year - (YEAR_RANGE * coefficient)
+        year_to = min(2025, year + (YEAR_RANGE * coefficient))
+        filters.append({"name": "filter_float_year:from", "value": str(year_from)})
+        filters.append({"name": "filter_float_year:to", "value": str(year_to)})
+
+    # Optional mileage filter
     if mileage:
         if not isinstance(mileage, str):
             raise ValueError("Mileage type must be string")
@@ -119,17 +140,6 @@ def create_otomoto_url(
         if mileage < 0 or mileage > 1000000:
             raise ValueError("Mileage must be between 0 and 1000000")
 
-    # Base URL for the GraphQL API
-    base_url = "https://www.otomoto.pl/graphql"
-
-    # Optional year filter
-    if year:
-        year_from = year - (YEAR_RANGE * coefficient)
-        year_to = min(2025, year + (YEAR_RANGE * coefficient))
-        filters.append({"name": "filter_float_year:from", "value": str(year_from)})
-        filters.append({"name": "filter_float_year:to", "value": str(year_to)})
-
-    if mileage:
         mileage_from = max(0, mileage - (MILEAGE_RANGE * coefficient))
         mileage_to = mileage + (MILEAGE_RANGE * coefficient)
         filters.append({"name": "filter_float_mileage:from", "value": str(mileage_from)})
@@ -143,12 +153,10 @@ def create_otomoto_url(
             fuel_type = "petrol"
         filters.append({"name": "filter_enum_fuel_type", "value": fuel_type})
 
-    # Fixed filters based on the example
+    # Adding sorting on acceding price and filter on car category
     filters.extend([{"name": "order", "value": "filter_float_price:asc"}, {"name": "category_id", "value": "29"}])
 
-    # console.print(filters)
-
-    # GraphQL variables
+    # GraphQL constant variables
     variables = {
         "after": None,
         "click2BuyExperimentId": "",
@@ -200,7 +208,7 @@ def create_otomoto_url(
 
     # Construct the URL
     url = (
-        f"{base_url}?operationName=listingScreen&"
+        f"{BASE_URL}?operationName=listingScreen&"
         f"variables={urllib.parse.quote(variables_encoded)}&"
         f"extensions={urllib.parse.quote(extensions_encoded)}"
     )
@@ -272,13 +280,11 @@ def query_otomoto_and_get_average_price(
     try:
         response = requests.get(api_url, headers=headers)
         response.raise_for_status()
-        try:
-            data = response.json()
-        except Exception as e:
-            print(response.status_code)
-            print(response.content)
-            print(response.text)
-            raise ValueError(f"Error parsing JSON: {e}")
+        print(response.status_code)
+        print(response.headers)
+        print(response.content)
+        print(response.text)
+        data = response.json()
 
         if "data" not in data or data["data"] is None:
             raise ValueError("No data returned in API response")
@@ -323,4 +329,5 @@ def query_otomoto_and_get_average_price(
 
 
 if __name__ == "__main__":
-    url, price_str = query_otomoto_and_get_average_price("audi", "a6", "2006", "200000", "Benzine")
+    console.print(headers)
+    # url, price_str = query_otomoto_and_get_average_price("audi", "a6", "2006", "200000", "Benzine")
