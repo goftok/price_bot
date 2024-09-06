@@ -4,3 +4,6 @@ geopy
 python-dotenv
 requests
 rich
+pytest
+brotli
+pre-commit
