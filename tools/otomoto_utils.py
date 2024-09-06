@@ -1,6 +1,7 @@
 import json
 import time
 import random
+import brotli
 import requests
 import urllib.parse
 from typing import Optional
@@ -280,11 +281,21 @@ def query_otomoto_and_get_average_price(
     try:
         response = requests.get(api_url, headers=headers)
         response.raise_for_status()
-        print(response.status_code)
-        print(response.headers)
-        print(response.content)
-        print(response.text)
-        data = response.json()
+        # print(response.status_code)
+        # print(response.headers)
+        # print(response.content)
+        # print(response.text)
+
+        # IMPORTANT
+        try:
+            if response.headers.get("Content-Encoding") == "br":
+                content = brotli.decompress(response.content)
+                data = json.loads(content)
+            else:
+                data = response.json()
+        except Exception as e:
+            console.print(f"Error with decompression: {e}")
+            data = response.json()
 
         if "data" not in data or data["data"] is None:
             raise ValueError("No data returned in API response")
