@@ -18,10 +18,14 @@ def create_cars_bot_message(car: dict, config: dict):
     make = car["vipUrl"].split("/")[3]
     model = car_attributes.get("model")
     distance_leuven = calculate_driving_distance(LEUVEN, (lat, long))
+
     year = car_attributes.get("constructionYear")
-    year_heristics = extract_year_from_ad(f"{car["title"]}. {car["categorySpecificDescription"]}")
+    year_heristics = extract_year_from_ad(f"{car['title']}. {car['categorySpecificDescription']}")
+    actual_year = year if year else (year_heristics + " (regex)" if year_heristics else "N/A")
+
     mileage = car_attributes.get("mileage")
-    mileage_heristics = extract_mileage_from_ad(f"{car["title"]}. {car["categorySpecificDescription"]}")
+    mileage_heristics = extract_mileage_from_ad(f"{car['title']}. {car['categorySpecificDescription']}")
+    actual_mileage = mileage + " km" if mileage else (mileage_heristics + " km (regex)" if mileage_heristics else "N/A")
 
     otomoto_url, price_str = query_otomoto_and_get_average_price(
         make=make,
@@ -39,8 +43,8 @@ def create_cars_bot_message(car: dict, config: dict):
     message += f"📍 Distance Leuven: {distance_leuven:.2f} km\n"
     message += f"🗒️ Description: {translate_to_english(car['categorySpecificDescription'])}\n"
     message += f"🛞 Model: {model if model else 'N/A'}\n"
-    message += f"📅 Year: {year if year else (year_heristics + ' (regex)' if year_heristics else 'N/A')}\n"
-    message += f"🛣️ Km: {mileage + " km" if mileage else (mileage_heristics + ' km (regex)' if mileage_heristics else 'N/A')}\n"
+    message += f"📅 Year: {actual_year}\n"
+    message += f"🛣️ Km: {actual_mileage}\n"
     message += f"⛽ Fuel: {car_attributes.get('fuel', 'N/A')}\n"
     message += f"{price_str}\n"
     message += f'🔗 <a href="{listing_url}">View Listing in 2dehands</a>\n'

@@ -52,6 +52,17 @@ model_dict = {
     "5 Reeks": "seria-5",
     "6 Reeks": "seria-6",
     "7 Reeks": "seria-7",
+    "8 Reeks": "seria-8",
+    "A-Klasse": "klasa-a",
+    "B-Klasse": "klasa-b",
+    "C-Klasse": "klasa-c",
+    "E-Klasse": "klasa-e",
+    "G-Klasse": "klasa-g",
+    "R-Klasse": "klasa-r",
+    "S-Klasse": "klasa-s",
+    "T-Klasse": "klasa-v",
+    "V-Klasse": "klasa-v",
+    "X-Klasse": "klasa-x",
     # TODO
 }
 
@@ -289,12 +300,17 @@ def query_otomoto_and_get_average_price(
         # IMPORTANT
         try:
             if response.headers.get("Content-Encoding") == "br":
-                content = brotli.decompress(response.content)
-                data = json.loads(content)
+                try:
+                    content = brotli.decompress(response.content)
+                    data = json.loads(content)
+                except brotli.error:
+                    # except brotli.error as brotli_error:
+                    # console.print(f"Brotli decompression failed: {brotli_error}")
+                    data = response.json()
             else:
                 data = response.json()
         except Exception as e:
-            console.print(f"Error with decompression: {e}")
+            console.print(f"General error with decompression: {e}")
             data = response.json()
 
         if "data" not in data or data["data"] is None:

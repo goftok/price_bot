@@ -9,7 +9,8 @@ from config import config
 from tools.secrets import BOT_TOKEN
 from tools.utils import create_urls, send_telegram_message, console
 from tools.utils import get_int_from_itemId, validate_config, calculate_driving_distance, NIJMEGEN, LEUVEN
-from tools.utils import send_errors_to_all_chats
+from tools.utils import convert_transmition, extract_mileage_from_ad, extract_year_from_ad
+from tools.secrets import send_errors_to_all_chats
 
 LIMIT = 100
 SLEEP_TIME = 17  # seconds
@@ -47,6 +48,8 @@ def get_ads(urls: list) -> list:
 
 
 def check_conditions(config: dict, ad: dict) -> bool:
+    ad_attributes = {attr["key"]: attr["value"] for attr in ad["attributes"]}
+
     # check if the add is new
     if config["last_id"] is not None:
         ad_id = get_int_from_itemId(ad["itemId"])
@@ -65,12 +68,48 @@ def check_conditions(config: dict, ad: dict) -> bool:
         if ad_price < config["min_price"]:
             return False
 
+    # check the minimum production year of the car or if not exists
+    if config["min_year"] is not None:
+        year = ad_attributes.get("constructionYear")
+        if not year:
+            year = extract_year_from_ad(f"{ad['title']}. {ad['categorySpecificDescription']}")
+
+        if not year or int(year) < config["min_year"]:
+            return False
+
+    # check the maximum production year of the car or if not exists
+    if config["max_year"] is not None:
+        year = ad_attributes.get("constructionYear")
+        if not year:
+            year = extract_year_from_ad(f"{ad['title']}. {ad['categorySpecificDescription']}")
+
+        if not year or int(year) > config["max_year"]:
+            return False
+
+    # check the minimum mileage of the car or if not exists
+    if config["min_mileage"] is not None:
+        mileage = ad_attributes.get("mileage")
+        if not mileage:
+            mileage = extract_mileage_from_ad(f"{ad['title']}. {ad['categorySpecificDescription']}")
+
+        if not mileage or int(mileage) < config["min_mileage"]:
+            return False
+
+    # check the maximum mileage of the car or if not exists
+    if config["max_mileage"] is not None:
+        mileage = ad_attributes.get("mileage")
+        if not mileage:
+            mileage = extract_mileage_from_ad(f"{ad['title']}. {ad['categorySpecificDescription']}")
+
+        if not mileage or int(mileage) > config["max_mileage"]:
+            return False
+
     # check the distance of the ad is within the limit to nijmegen
     if config["max_distance_nijmegen"] is not None:
         ad_lat = ad["location"]["latitude"]
         ad_long = ad["location"]["longitude"]
         distance_nijmegen = int(calculate_driving_distance(NIJMEGEN, (ad_lat, ad_long)))
-        if distance_nijmegen <= config["max_distance_nijmegen"]:
+        if distance_nijmegen > config["max_distance_nijmegen"]:
             return False
 
     # check the distance of the ad is within the limit to leuven
@@ -78,7 +117,7 @@ def check_conditions(config: dict, ad: dict) -> bool:
         ad_lat = ad["location"]["latitude"]
         ad_long = ad["location"]["longitude"]
         distance_leuven = int(calculate_driving_distance(LEUVEN, (ad_lat, ad_long)))
-        if distance_leuven <= config["max_distance_leuven"]:
+        if distance_leuven > config["max_distance_leuven"]:
             return False
 
     # check if the model of is allowed (for car)
@@ -87,10 +126,18 @@ def check_conditions(config: dict, ad: dict) -> bool:
         if ad_model not in config["allowed_models"]:
             return False
 
+    # check if the model of is not allowed (for car)
     if config["not_allowed_models"] is not None:
         ad_model = ad["vipUrl"].split("/")[3]
         if ad_model in config["not_allowed_models"]:
             return False
+
+    # check if the car has automatic transmission
+    if config["is_automatic_transmission"] is not None:
+        transmission = convert_transmition(ad_attributes.get("transmission"))
+        if transmission != "automatic":
+            return False
+
     return True
 
 
@@ -107,7 +154,10 @@ def send_ads(ads: list, config: dict) -> None:
                 f"'{config['source']}' with index of '{idx}' size: '{len(ads)}'"
             )
             if idx > len(ads) * 0.9:
-                send_errors_to_all_chats(f"WARNING for '{config['source']}'! Ad found at '{idx}' size: '{len(ads)}. Increase number of urls to check.")
+                send_errors_to_all_chats(
+                    f"WARNING for '{config['source']}'! Ad found at '{idx}' size: '{len(ads)}. "
+                    "Increase number of urls to check."
+                )
         filtered_ads.append(ad)
 
     sorted_ads = sorted(filtered_ads, key=lambda x: get_int_from_itemId(x["itemId"]), reverse=True)
@@ -116,7 +166,7 @@ def send_ads(ads: list, config: dict) -> None:
         return
 
     last_found_ad_id = get_int_from_itemId(sorted_ads[0]["itemId"])
-    console.print(f"Last found add id for '{config["source"]}': {last_found_ad_id}")
+    console.print(f"Last found add id for '{config['source']}': {last_found_ad_id}")
 
     # don't send the adds from the first iteration
     if config["last_id"] is None:
@@ -136,9 +186,9 @@ def send_ads(ads: list, config: dict) -> None:
 
 
 def main():
-    response = requests.get('https://httpbin.org/ip')
+    response = requests.get("https://httpbin.org/ip")
     tprint("Price Bot")
-    console.print('IP used for the bot is {}'.format(response.json()['origin']))
+    console.print("IP used for the bot is {}".format(response.json()["origin"]))
 
     for ad_config in config:
         ad_config = config[ad_config]
@@ -150,7 +200,7 @@ def main():
         cache_ads = {}
         for ad_config in config:
             ad_config = config[ad_config]
-            query_params = json.dumps(ad_config['query_params'], sort_keys=True)
+            query_params = json.dumps(ad_config["query_params"], sort_keys=True)
             cache_key = f"{ad_config['api_link']}_{ad_config['url_numbers']}_{query_params}"
 
             if cache_key in cache_ads:
@@ -169,7 +219,7 @@ def main():
                 if time_taken < MIN_WAIT_TIME:
                     time.sleep(MIN_WAIT_TIME - time_taken)
 
-                console.print(f"Time taken for {ad_config['source']}: {time.time() - ad_config["start_time"]}")
+                console.print(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
 
                 ad_config["start_time"] = time.time()
 

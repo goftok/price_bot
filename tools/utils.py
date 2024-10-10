@@ -3,7 +3,6 @@ import requests
 from rich.console import Console
 from geopy.distance import geodesic
 from deep_translator import GoogleTranslator
-from tools.secrets import BOT_TOKEN, CHAT_ID1, CHAT_ID2, CHAT_ID3
 
 NIJMEGEN = (51.8433, 5.8609)
 LEUVEN = (50.8823, 4.7138)
@@ -17,8 +16,14 @@ template_config = {
     "source": str,
     "min_price": (type(None), int),
     "max_price": (type(None), int),
+    "min_year": (type(None), int),
+    "max_year": (type(None), int),
+    "min_mileage": (type(None), int),
+    "max_mileage": (type(None), int),
     "chat_id": str,
+    "not_allowed_models": (type(None), list),
     "allowed_models": (type(None), list),
+    "is_automatic_transmission": (type(None), bool),
     "url_numbers": int,
     "function_for_message": callable,
     "api_link": str,
@@ -80,11 +85,6 @@ def create_urls(config: dict, limit: int = 100):
     return urls
 
 
-def send_errors_to_all_chats(e: Exception):
-    for chat_id in [CHAT_ID1, CHAT_ID2, CHAT_ID3]:
-        send_telegram_message(BOT_TOKEN, chat_id, f"bot error: {e}")
-
-
 def get_int_from_itemId(item_id: str):
     return int(item_id[1:])
 
@@ -134,6 +134,18 @@ def extract_mileage_using_regex(regex: str, text: str) -> str:
     return None
 
 
+def convert_transmition(transmission_str: str):
+    transmission_dict = {
+        "Handgeschakeld": "manual",
+        "Automaat": "automatic",
+    }
+
+    if transmission_str and transmission_str in transmission_dict:
+        return transmission_dict[transmission_str]
+    else:
+        return "N/A"
+
+
 def validate_config(config):
     for t_key, t_value in template_config.items():
         if t_key not in config:
@@ -155,4 +167,9 @@ def validate_config(config):
                     f"Incorrect type for key '{t_key}'. Expected {t_value.__name__}, "
                     f"got {type(config[t_key]).__name__}"
                 )
+
+    extra_keys = [key for key in config if key not in template_config]
+    if extra_keys:
+        raise ValueError(f"Extra keys found in configuration: {extra_keys}")
+
     console.print(f"Configuration for {config['source']} is valid")
