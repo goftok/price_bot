@@ -183,7 +183,7 @@ config = {
     # },
     "cars_2dehands_5": {
         "source": "cars-2dehands5",
-        "min_price": None,
+        "min_price": 1000,
         "max_price": 9000,
         "min_year": 2009,
         "max_year": None,
