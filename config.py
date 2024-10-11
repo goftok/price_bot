@@ -199,7 +199,6 @@ config = {
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
         "query_params": {
-            "attributesById": ["10898"],
             "attributesByKey": ["offeredSince:Vandaag"],
             "l1CategoryId": "91",
             "sortBy": "SORT_INDEX",
