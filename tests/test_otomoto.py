@@ -1,5 +1,5 @@
 from tools.otomoto_utils import query_otomoto_and_get_average_price
-from tools.utils import console
+from tools.console import console
 
 
 def test_query_otomoto_and_get_average_price():

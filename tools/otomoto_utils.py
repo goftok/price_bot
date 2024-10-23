@@ -6,9 +6,7 @@ import requests
 import urllib.parse
 from typing import Optional
 
-from rich.console import Console
-
-console = Console()
+from tools.logging import logger
 
 NUMBER_OF_RANDOM_OFFERS = 5
 YEAR_RANGE = 1
@@ -310,7 +308,7 @@ def query_otomoto_and_get_average_price(
             else:
                 data = response.json()
         except Exception as e:
-            console.print(f"General error with decompression: {e}")
+            logger.error(f"General error with decompression: {e}")
             data = response.json()
 
         if "data" not in data or data["data"] is None:
@@ -343,7 +341,7 @@ def query_otomoto_and_get_average_price(
         edges = data["data"]["advertSearch"]["edges"]
         otomoto_url = data["data"]["advertSearch"]["url"]
     except Exception as e:
-        console.print(f"Error getting otomoto ads: {e}")
+        logger.error(f"Error getting otomoto ads: {e}")
         return None, e
 
     try:
@@ -351,10 +349,10 @@ def query_otomoto_and_get_average_price(
         # console.print(price_str)
         return otomoto_url, price_str
     except Exception as e:
-        console.print(f"Error getting otomoto price: {e}")
+        logger.error(f"Error getting otomoto price: {e}")
         return otomoto_url, e
 
 
 if __name__ == "__main__":
-    console.print(headers)
     # url, price_str = query_otomoto_and_get_average_price("audi", "a6", "2006", "200000", "Benzine")
+    pass

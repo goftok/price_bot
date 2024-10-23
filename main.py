@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import json
@@ -7,10 +8,11 @@ from random import randint
 
 from config import config
 from tools.secrets import BOT_TOKEN
-from tools.utils import create_urls, send_telegram_message, console
+from tools.utils import create_urls, send_telegram_message
 from tools.utils import get_int_from_itemId, validate_config, calculate_driving_distance, NIJMEGEN, LEUVEN
 from tools.utils import convert_transmition, extract_mileage_from_ad, extract_year_from_ad
 from tools.secrets import send_errors_to_all_chats
+from tools.logging import logger
 
 LIMIT = 100
 SLEEP_TIME = 17  # seconds
@@ -28,7 +30,7 @@ def get_ads(urls: list) -> list:
 
             # check if error code is 502 and sleep for 10 seconds
             if response.status_code in ERROR_CODES:
-                console.print(f"Error {response.status_code} for URL {url}")
+                logger.warning(f"Warning: {response.status_code} for URL {url}")
                 time.sleep(RETRY_TIME)
                 response = requests.get(url)
 
@@ -41,7 +43,7 @@ def get_ads(urls: list) -> list:
                 break
 
         except Exception as e:
-            console.print(f"Error for URL {url}: {e}")
+            logger.error(f"Error for URL {url}: {e}")
             # send_errors_to_all_chats(e)
             sys.exit(1)
     return ads
@@ -149,7 +151,7 @@ def send_ads(ads: list, config: dict) -> None:
             continue
 
         if config["last_id"]:
-            console.print(
+            logger.info(
                 f"Found ad: '{get_int_from_itemId(ad['itemId'])}' for "
                 f"'{config['source']}' with index of '{idx}' size: '{len(ads)}'"
             )
@@ -166,7 +168,7 @@ def send_ads(ads: list, config: dict) -> None:
         return
 
     last_found_ad_id = get_int_from_itemId(sorted_ads[0]["itemId"])
-    console.print(f"Last found add id for '{config['source']}': {last_found_ad_id}")
+    logger.info(f"Last found add id for '{config['source']}': {last_found_ad_id}")
 
     # don't send the adds from the first iteration
     if config["last_id"] is None:
@@ -181,14 +183,17 @@ def send_ads(ads: list, config: dict) -> None:
             bot_message = config["function_for_message"](car, config)
             send_telegram_message(BOT_TOKEN, config["chat_id"], bot_message)
     except Exception as e:
-        console.log(f"Error fetching data: {e}")
+        logger.error(f"Error fetching data: {e}")
         send_telegram_message(BOT_TOKEN, config["chat_id"], f"Error fetching data. Check logs for more info. {e}")
 
 
 def main():
     response = requests.get("https://httpbin.org/ip")
     tprint("Price Bot")
-    console.print("IP used for the bot is {}".format(response.json()["origin"]))
+    logger.info("IP used for the bot is {}".format(response.json()["origin"]))
+
+    pid = os.getpid()
+    logger.info(f"Process PID: {pid}")
 
     for ad_config in config:
         ad_config = config[ad_config]
@@ -219,7 +224,7 @@ def main():
                 if time_taken < MIN_WAIT_TIME:
                     time.sleep(MIN_WAIT_TIME - time_taken)
 
-                console.print(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
+                logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
 
                 ad_config["start_time"] = time.time()
 

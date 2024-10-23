@@ -104,8 +104,8 @@ config = {
     #         "sortOrder": "DECREASING",
     #     },
     # },
-    "cars_2dehands_3": {
-        "source": "cars-2dehands3",
+    "cars_2dehands_4": {
+        "source": "cars-2dehands4",
         "min_price": None,
         "max_price": 15000,
         "min_year": None,
@@ -129,8 +129,8 @@ config = {
             "sortOrder": "DECREASING",
         },
     },
-    # "cars_2dehands_4": {
-    #     "source": "cars-2dehands4",
+    # "cars_2dehands_5": {
+    #     "source": "cars-2dehands5",
     #     "min_price": None,
     #     "max_price": None,
     #     "min_year": None,
@@ -155,8 +155,8 @@ config = {
     #         "sortOrder": "DECREASING",
     #     },
     # },
-    # "cars_marktplaats_4": {
-    #     "source": "cars-marktplaats4",
+    # "cars_marktplaats_5": {
+    #     "source": "cars-marktplaats5",
     #     "min_price": None,
     #     "max_price": None,
     #     "min_year": None,
@@ -181,10 +181,10 @@ config = {
     #         "sortOrder": "DECREASING",
     #     },
     # },
-    "cars_2dehands_5": {
-        "source": "cars-2dehands5",
+    "cars_2dehands_6": {
+        "source": "cars-2dehands6",
         "min_price": 1000,
-        "max_price": 9000,
+        "max_price": 13000,
         "min_year": 2009,
         "max_year": None,
         "min_mileage": None,

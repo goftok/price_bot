@@ -1,14 +1,14 @@
 import re
 import requests
-from rich.console import Console
 from geopy.distance import geodesic
 from deep_translator import GoogleTranslator
+
+from tools.logging import logger
 
 NIJMEGEN = (51.8433, 5.8609)
 LEUVEN = (50.8823, 4.7138)
 HERENT = (50.9093, 4.6774)
 
-console = Console()
 translator_en = GoogleTranslator(source="auto", target="en")
 translator_ru = GoogleTranslator(source="auto", target="ru")
 
@@ -48,7 +48,7 @@ def translate_to_english(text):
     try:
         translated_text = translator_en.translate(text.encode("utf-8", "replace").decode("utf-8"))
     except Exception as e:
-        console.log(f"Error in translation: {e}")
+        logger.error(f"Error in translation: {e}")
         translated_text = text
     return translated_text
 
@@ -57,7 +57,7 @@ def translate_to_russian(text):
     try:
         translated_text = translator_ru.translate(text.encode("utf-8", "replace").decode("utf-8"))
     except Exception as e:
-        console.log(f"Error in translation: {e}")
+        logger.error(f"Error in translation: {e}")
         translated_text = text
     return translated_text
 
@@ -172,4 +172,4 @@ def validate_config(config):
     if extra_keys:
         raise ValueError(f"Extra keys found in configuration: {extra_keys}")
 
-    console.print(f"Configuration for {config['source']} is valid")
+    logger.info(f"Configuration for {config['source']} is valid")
