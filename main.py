@@ -44,7 +44,7 @@ def get_ads(urls: list) -> list:
 
         except Exception as e:
             logger.error(f"Error for URL {url}: {e}")
-            # send_errors_to_all_chats(e)
+            send_errors_to_all_chats(e)
             sys.exit(1)
     return ads
 
@@ -210,9 +210,11 @@ def main():
 
             if cache_key in cache_ads:
                 ads = cache_ads[cache_key]
+                # logger.info("Using cached ads")
             else:
                 ads = get_ads(urls=ad_config["urls"])
                 cache_ads[cache_key] = ads
+                # logger.info("Fetched new ads")
 
             send_ads(ads=ads, config=ad_config)
 
