@@ -1,6 +1,5 @@
 from ads_specific.cars import create_cars_bot_message
 from ads_specific.cars2 import create_cars2_bot_message
-from ads_specific.cars4 import create_cars4_bot_message
 from tools.secrets import CHAT_ID1, CHAT_ID2, CHAT_ID4, CHAT_ID6
 
 config = {
@@ -194,7 +193,7 @@ config = {
         "allowed_models": None,
         "is_automatic_transmission": True,
         "url_numbers": 6,
-        "function_for_message": create_cars4_bot_message,
+        "function_for_message": create_cars_bot_message,
         "api_link": "https://www.2dehands.be/lrp/api/search",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,

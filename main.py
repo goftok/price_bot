@@ -180,8 +180,8 @@ def send_ads(ads: list, config: dict) -> None:
     # send the adds
     try:
         for car in sorted_ads:
-            bot_message = config["function_for_message"](car, config)
-            send_telegram_message(BOT_TOKEN, config["chat_id"], bot_message)
+            message, picture_url, listing_url, otomoto_url = config["function_for_message"](car, config)
+            send_telegram_message(BOT_TOKEN, config["chat_id"], message, picture_url, listing_url, otomoto_url)
     except Exception as e:
         logger.error(f"Error fetching data: {e}")
         send_telegram_message(BOT_TOKEN, config["chat_id"], f"Error fetching data. Check logs for more info. {e}")

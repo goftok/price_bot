@@ -1,4 +1,5 @@
 import re
+import json
 import requests
 from geopy.distance import geodesic
 from deep_translator import GoogleTranslator
@@ -37,11 +38,48 @@ def calculate_driving_distance(origin: tuple, destination: tuple):
     return geodesic(origin, destination).kilometers
 
 
-def send_telegram_message(bot_token: str, admin_id: int, message: str):
-    base_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    payload = {"chat_id": admin_id, "text": message, "parse_mode": "HTML"}
-    response = requests.post(base_url, data=payload)
-    return response.json()
+def send_telegram_message(
+    bot_token: str,
+    admin_id: int,
+    message: str,
+    image_url: str = None,
+    two_dehands_url: str = None,
+    otomoto_url: str = None,
+):
+    if image_url:
+        base_url = f"https://api.telegram.org/bot{bot_token}/sendPhoto"
+    else:
+        base_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+
+    if image_url:
+        payload = {
+            "chat_id": admin_id,
+            "photo": image_url,
+            "caption": message,
+            "parse_mode": "HTML",
+        }
+    else:
+        payload = {"chat_id": admin_id, "text": message, "parse_mode": "HTML"}
+
+    buttons = []
+
+    if two_dehands_url:
+        buttons.append({"text": "2dehands", "url": two_dehands_url})
+
+    if otomoto_url:
+        buttons.append({"text": "Otomoto", "url": otomoto_url})
+
+    if buttons:
+        inline_keyboard = {"inline_keyboard": [buttons]}
+        payload["reply_markup"] = json.dumps(inline_keyboard)
+
+    try:
+        response = requests.post(base_url, json=payload)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Failed to send message: {e}")
+        return {"error": str(e)}
 
 
 def translate_to_english(text):
@@ -144,6 +182,27 @@ def convert_transmition(transmission_str: str):
         return transmission_dict[transmission_str]
     else:
         return "N/A"
+
+
+def get_image_url(car: dict):
+    pictures = car.get("pictures", [])
+
+    if pictures:
+        first_image = pictures[0]
+        return first_image.get("extraExtraLargeUrl", None)
+    else:
+        return None
+
+
+def get_price_stats(belgium_price, poland_price):
+    if belgium_price == 0 or poland_price == 0:
+        return "N/A"
+    if poland_price > belgium_price * 1.2:
+        return "Super Low"
+    if poland_price > belgium_price:
+        return "Low"
+    else:
+        return "High"
 
 
 def validate_config(config):

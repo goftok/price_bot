@@ -268,7 +268,7 @@ def get_average_price_str(offers: list) -> str:
         higher_price_list.append(higher_price)
 
     if len(lower_price_list) == 0 or len(higher_price_list) == 0:
-        return "No price data available"
+        return "No price data available", 0
 
     lower_price_avg = int(sum(lower_price_list) / len(lower_price_list))
     higher_price_avg = int(sum(higher_price_list) / len(higher_price_list))
@@ -279,7 +279,7 @@ def get_average_price_str(offers: list) -> str:
     return (
         f"💸 Otomoto EURO: {lower_price_avg_euro}-{higher_price_avg_euro}\n"
         f"💸 Otomoto PLN: {lower_price_avg}-{higher_price_avg}"
-    )
+    ), lower_price_avg_euro
 
 
 def query_otomoto_and_get_average_price(
@@ -342,15 +342,15 @@ def query_otomoto_and_get_average_price(
         otomoto_url = data["data"]["advertSearch"]["url"]
     except Exception as e:
         logger.error(f"Error getting otomoto ads: {e}")
-        return None, e
+        return None, str(e), 0
 
     try:
-        price_str = get_average_price_str(edges)
+        price_str, lowest_price_int = get_average_price_str(edges)
         # console.print(price_str)
-        return otomoto_url, price_str
+        return otomoto_url, price_str, lowest_price_int
     except Exception as e:
         logger.error(f"Error getting otomoto price: {e}")
-        return otomoto_url, e
+        return otomoto_url, str(e), 0
 
 
 if __name__ == "__main__":

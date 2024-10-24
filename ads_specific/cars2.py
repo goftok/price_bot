@@ -1,5 +1,11 @@
 from tools.utils import calculate_driving_distance, HERENT
-from tools.utils import extract_year_from_ad, extract_mileage_from_ad
+from tools.utils import (
+    extract_year_from_ad,
+    extract_mileage_from_ad,
+    convert_transmition,
+    get_image_url,
+    get_price_stats,
+)
 from tools.otomoto_utils import query_otomoto_and_get_average_price
 
 
@@ -12,6 +18,7 @@ def create_cars2_bot_message(car: dict, config: dict):
     long = car["location"]["longitude"]
     city = car["location"].get("cityName", "N/A")
     country = car["location"].get("countryName", "N/A")
+    picture_url = get_image_url(car)
 
     car_attributes = {attr["key"]: attr["value"] for attr in car["attributes"]}
 
@@ -27,7 +34,9 @@ def create_cars2_bot_message(car: dict, config: dict):
     mileage_heristics = extract_mileage_from_ad(f"{car['title']}. {car['categorySpecificDescription']}")
     actual_mileage = mileage + " km" if mileage else (mileage_heristics + " km (regex)" if mileage_heristics else "N/A")
 
-    otomoto_url, price_str = query_otomoto_and_get_average_price(
+    transmission = convert_transmition(car_attributes.get("transmission"))
+
+    otomoto_url, price_str, lowest_price_int = query_otomoto_and_get_average_price(
         make=make,
         model=model,
         year=year if year else year_heristics,
@@ -39,6 +48,7 @@ def create_cars2_bot_message(car: dict, config: dict):
     message += f"#{make}\n"
     message += f"🚘 Title: {car['title']}\n"
     message += f"💰 Price: €{price_euro} ({price_type})\n"
+    message += f"💰 Price info: {get_price_stats(price_euro, lowest_price_int)}\n"
     message += f"📍 Location: {city}, {country}\n"
     message += f"📍 Distance Herent: {distance_herent:.2f} km\n"
     message += f"🗒️ Description: {car['categorySpecificDescription']}\n"
@@ -46,7 +56,6 @@ def create_cars2_bot_message(car: dict, config: dict):
     message += f"📅 Year: {actual_year}\n"
     message += f"🛣️ Km: {actual_mileage}\n"
     message += f"⛽ Fuel: {car_attributes.get('fuel', 'N/A')}\n"
+    message += f"🚦 Transmission: {transmission}\n"
     message += f"{price_str}\n"
-    message += f'🔗 <a href="{listing_url}">View Listing in 2dehands</a>\n'
-    message += f'🔗 <a href="{otomoto_url}">View Listing in Otomoto</a>\n'
-    return message
+    return message, picture_url, listing_url, otomoto_url
