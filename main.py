@@ -10,7 +10,7 @@ from config import config
 from tools.secrets import BOT_TOKEN
 from tools.utils import create_urls, send_telegram_message
 from tools.utils import get_int_from_itemId, validate_config, calculate_driving_distance, NIJMEGEN, LEUVEN
-from tools.utils import convert_transmition, extract_mileage_from_ad, extract_year_from_ad
+from tools.utils import convert_transmition, extract_mileage_from_ad, extract_year_from_ad, extract_gearbox_from_ad
 from tools.secrets import send_errors_to_all_chats
 from tools.logging import logger
 
@@ -18,7 +18,7 @@ LIMIT = 100
 SLEEP_TIME = 17  # seconds
 RETRY_TIME = 60  # seconds
 MIN_WAIT_TIME = 120  # seconds
-ERROR_CODES = [502]  # 429
+ERROR_CODES = [502, 504]  # 429
 
 
 def get_ads(urls: list) -> list:
@@ -51,6 +51,7 @@ def get_ads(urls: list) -> list:
 
 def check_conditions(config: dict, ad: dict) -> bool:
     ad_attributes = {attr["key"]: attr["value"] for attr in ad["attributes"]}
+    full_text = f"{ad['title']}. {ad['categorySpecificDescription']}"
 
     # check if the add is new
     if config["last_id"] is not None:
@@ -136,7 +137,11 @@ def check_conditions(config: dict, ad: dict) -> bool:
 
     # check if the car has automatic transmission
     if config["is_automatic_transmission"] is not None:
-        transmission = convert_transmition(ad_attributes.get("transmission"))
+        transmission = ad_attributes.get("transmission")
+        if transmission:
+            transmission = convert_transmition(transmission)
+        else:
+            transmission = extract_gearbox_from_ad(full_text)
         if transmission != "automatic":
             return False
 

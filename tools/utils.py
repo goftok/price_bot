@@ -1,6 +1,7 @@
 import re
 import json
 import requests
+from typing import Optional
 from geopy.distance import geodesic
 from deep_translator import GoogleTranslator
 
@@ -172,6 +173,106 @@ def extract_mileage_using_regex(regex: str, text: str) -> str:
     return None
 
 
+def extract_gearbox_from_ad(text: str) -> str:
+    manual_keywords = [
+        "handgeschakeld",
+        "handgeschakelde",
+        "manueel",
+        "manual",
+        "manuell",
+        "manuale",
+        "boîte manuelle",
+        "schaltgetriebe",
+        "mécanique",
+    ]
+    automatic_keywords = [
+        "automaat",
+        "automat",
+        "automatic",
+        "automatik",
+        "automatico",
+        "boîte automatique",
+        "automatique",
+        "automatische",
+        "automatisch",
+    ]
+    exclusion_keywords = [
+        "phare",
+        "essuie",
+        "essuie-glace",
+        "lumière",
+        "lichten",
+        "airconditioning",
+        "laser",
+        "anti",
+        "feux",
+        "light",
+        "wiper",
+        "airco",
+    ]
+
+    text = text.lower()
+
+    # Combine keywords into regular expressions with boundary checking
+    manual_pattern = r"\b(?:" + "|".join(manual_keywords) + r")\b"
+    automatic_pattern = r"\b(?:" + "|".join(automatic_keywords) + r")\b"
+    exclusion_pattern = r"\b(?:" + "|".join(exclusion_keywords) + r")\b"
+
+    # Ensure "automatic" keywords do not appear next to exclusion keywords
+    if re.search(automatic_pattern, text):
+        if not re.search(rf"{exclusion_pattern}\s+{automatic_pattern}|{automatic_pattern}\s+{exclusion_pattern}", text):
+            return "automatic"
+
+    # Ensure "manual" keywords are detected without restriction
+    if re.search(manual_pattern, text):
+        return "manual"
+
+    return "N/A"
+
+
+def extract_fuel_type_from_ad(text: str) -> str:
+    petrol_keywords = [
+        "petrol",
+        "gasoline",
+        "gas",
+        "essence",
+        "benzine",
+        "benzin",
+        "benzina",
+        "gti",
+        "tce",
+        "fsi",
+        "tfsi",
+        "tsi",
+    ]
+    diesel_keywords = [
+        "diesel",
+        "gtd",
+        "tdi",
+        "dci",
+        "cdti",
+        "hdi",
+        "cddi",
+        "d4d",
+    ]
+    hybrid_keywords = ["hybrid", "hybride"]
+
+    text = text.lower()
+
+    petrol_pattern = r"\b(?:" + "|".join(petrol_keywords) + r")\b"
+    diesel_pattern = r"\b(?:" + "|".join(diesel_keywords) + r")\b"
+    hybrid_pattern = r"\b(?:" + "|".join(hybrid_keywords) + r")\b"
+
+    if re.search(hybrid_pattern, text):
+        return "Hybrid"
+    elif re.search(diesel_pattern, text):
+        return "Diesel"
+    elif re.search(petrol_pattern, text):
+        return "Benzine"
+    else:
+        return "N/A"
+
+
 def convert_transmition(transmission_str: str):
     transmission_dict = {
         "Handgeschakeld": "manual",
@@ -194,12 +295,17 @@ def get_image_url(car: dict):
         return None
 
 
-def get_price_stats(belgium_price, poland_price):
-    if belgium_price == 0 or poland_price == 0:
+def get_price_info(
+    belgium_price: int,
+    poland_price: int,
+    make: Optional[str] = None,
+    model: Optional[str] = None,
+) -> str:
+    if belgium_price == 0 or poland_price == 0 or model is None or make is None:
         return "N/A"
-    if poland_price > belgium_price * 1.2:
+    elif poland_price > belgium_price * 1.3:
         return "Super Low"
-    if poland_price > belgium_price:
+    elif poland_price > belgium_price:
         return "Low"
     else:
         return "High"
