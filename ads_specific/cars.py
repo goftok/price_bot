@@ -41,11 +41,15 @@ def create_cars_bot_message(car: dict, config: dict):
     if transmission:
         transmission = convert_transmition(transmission)
     else:
-        transmission = extract_gearbox_from_ad(full_text) + " (regex)"
+        transmission = extract_gearbox_from_ad(full_text)
+        if transmission != "N/A":
+            transmission += " (regex)"
 
     fuel = car_attributes.get("fuel")
     if not fuel:
-        fuel = extract_fuel_type_from_ad(full_text) + " (regex)"
+        fuel = extract_fuel_type_from_ad(full_text)
+        if fuel != "N/A":
+            fuel += " (regex)"
 
     otomoto_url, price_str, lowest_price_int = query_otomoto_and_get_average_price(
         make=make,
