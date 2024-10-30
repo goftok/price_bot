@@ -57,13 +57,19 @@ template_config = {
     "source": str,                              # Identifier for the data source (custom name).
     "min_price": (type(None), int),             # Minimum price for filtering, can be None.
     "max_price": (type(None), int),             # Maximum price for filtering, can be None.
+    "min_year": (type(None), int),              # Minimum year for filtering, can be None.
+    "max_year": (type(None), int),              # Maximum year for filtering, can be None.
+    "min_mileage": (type(None), int),           # Minimum mileage for filtering, can be None.
+    "max_mileage": (type(None), int),           # Maximum mileage for filtering, can be None.
     "chat_id": str,                             # Chat ID for sending messages or alerts.
+    "not_allowed_models": (type(None), list),   # List of not allowed car models, can be None for no restriction.
     "allowed_models": (type(None), list),       # List of allowed car models, can be None for no restriction.
+    "is_automatic": (type(None), bool),         # Filter for automatic transmission, can be None.
     "url_numbers": int,                         # Number of URLs to process.
     "function_for_message": callable,           # Function to create messages for bot.
     "api_link": str,                            # Link to the API for data scraping.
-    "query_params": dict,                       # Dictionary of query parameters for API requests.
     "max_distance_nijmegen": (type(None), int), # Max distance from Nijmegen for filtering, can be None.
     "max_distance_leuven": (type(None), int),   # Max distance from Leuven for filtering, can be None.
+    "query_params": dict,                       # Dictionary of query parameters for API requests.
 }
 ```

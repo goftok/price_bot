@@ -103,7 +103,7 @@ def create_otomoto_url(
     mileage: Optional[str],
     fuel_type: Optional[str],
     coefficient: Optional[float] = 1,
-):
+) -> str:
 
     # Adding necessary make filter
     make = make.lower()
@@ -283,7 +283,11 @@ def get_average_price_str(offers: list) -> str:
 
 
 def query_otomoto_and_get_average_price(
-    make: str, model: str, year: Optional[int], mileage: Optional[int], fuel_type: Optional[str]
+    make: str,
+    model: str,
+    year: Optional[int],
+    mileage: Optional[int],
+    fuel_type: Optional[str],
 ) -> tuple:
     api_url = create_otomoto_url(make=make, model=model, year=year, mileage=mileage, fuel_type=fuel_type)
 

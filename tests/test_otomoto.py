@@ -1,4 +1,4 @@
-from tools.otomoto_utils import query_otomoto_and_get_average_price
+from tools.otomoto import query_otomoto_and_get_average_price
 from tools.console import console
 
 

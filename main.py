@@ -8,11 +8,17 @@ from random import randint
 
 from config import config
 from tools.secrets import BOT_TOKEN
-from tools.utils import create_urls, send_telegram_message
-from tools.utils import get_int_from_itemId, validate_config, calculate_driving_distance, NIJMEGEN, LEUVEN
-from tools.utils import convert_transmition, extract_mileage_from_ad, extract_year_from_ad, extract_gearbox_from_ad
-from tools.secrets import send_errors_to_all_chats
+from tools.destination import NIJMEGEN, LEUVEN, calculate_driving_distance
 from tools.logging import logger
+from tools.secrets import send_errors_to_all_chats
+from tools.telegram import send_telegram_message
+from tools.utils import create_urls
+from tools.utils import get_int_from_itemId, validate_config
+from tools.utils import convert_transmition
+
+from tools.heuristics.gearbox import extract_gearbox_from_ad
+from tools.heuristics.year import extract_year_from_ad
+from tools.heuristics.mileage import extract_mileage_from_ad
 
 LIMIT = 100
 SLEEP_TIME = 17  # seconds

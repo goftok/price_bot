@@ -1,6 +1,6 @@
-from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
 main_dir = Path(__file__).resolve().parent.parent
 log_file_path = main_dir / "output.log"

@@ -1,4 +1,4 @@
-from tools.utils import extract_year_from_ad
+from tools.heuristics.year import extract_year_from_ad
 
 
 def test_extract_year_from_ad1():

@@ -1,4 +1,4 @@
-from tools.utils import extract_mileage_from_ad
+from tools.heuristics.mileage import extract_mileage_from_ad
 
 
 def test_extract_mileage_from_ad1():

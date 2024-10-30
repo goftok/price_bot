@@ -1,4 +1,4 @@
-from tools.utils import extract_fuel_type_from_ad
+from tools.heuristics.fuel_type import extract_fuel_type_from_ad
 
 
 def test_extract_fuel_type_from_ad1():

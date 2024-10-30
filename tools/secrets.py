@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from tools.utils import send_telegram_message
+from tools.telegram import send_telegram_message
 from tools.logging import logger
 
 load_dotenv()
@@ -39,6 +39,6 @@ if not CHAT_ID6:
     CHAT_ID6 = CHAT_ID1
 
 
-def send_errors_to_all_chats(e: Exception):
+def send_errors_to_all_chats(e: Exception) -> None:
     for chat_id in [CHAT_ID1, CHAT_ID2, CHAT_ID4, CHAT_ID6]:
         send_telegram_message(BOT_TOKEN, chat_id, f"bot error: {e}")

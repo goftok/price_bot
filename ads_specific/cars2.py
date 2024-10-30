@@ -1,14 +1,11 @@
-from tools.utils import calculate_driving_distance, HERENT
-from tools.utils import (
-    extract_year_from_ad,
-    extract_mileage_from_ad,
-    extract_gearbox_from_ad,
-    extract_fuel_type_from_ad,
-    convert_transmition,
-    get_image_url,
-    get_price_info,
-)
-from tools.otomoto_utils import query_otomoto_and_get_average_price
+from tools.destination import calculate_driving_distance, HERENT
+from tools.otomoto import query_otomoto_and_get_average_price
+from tools.utils import convert_transmition, get_image_url, get_price_info
+
+from tools.heuristics.fuel_type import extract_fuel_type_from_ad
+from tools.heuristics.gearbox import extract_gearbox_from_ad
+from tools.heuristics.year import extract_year_from_ad
+from tools.heuristics.mileage import extract_mileage_from_ad
 
 
 def create_cars2_bot_message(car: dict, config: dict):

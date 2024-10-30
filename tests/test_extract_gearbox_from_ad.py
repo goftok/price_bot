@@ -1,4 +1,4 @@
-from tools.utils import extract_gearbox_from_ad
+from tools.heuristics.gearbox import extract_gearbox_from_ad
 
 
 def test_extract_gearbox_from_ad1():
