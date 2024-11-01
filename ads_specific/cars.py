@@ -1,6 +1,7 @@
 from tools.destination import calculate_driving_distance, LEUVEN
 from tools.otomoto import query_otomoto_and_get_average_price
 from tools.translator import translate_to_english
+from tools.twodehands import get_seller_info
 from tools.utils import convert_transmition, get_image_url, get_price_info
 
 from tools.heuristics.fuel_type import extract_fuel_type_from_ad
@@ -18,6 +19,8 @@ def create_cars_bot_message(car: dict, config: dict):
     long = car["location"]["longitude"]
     city = car["location"].get("cityName", "N/A")
     country = car["location"].get("countryName", "N/A")
+    seller_id = car.get("sellerInformation", {}).get("sellerId")
+    seller_name = car.get("sellerInformation", {}).get("sellerName")
     picture_url = get_image_url(car)
 
     car_attributes = {attr["key"]: attr["value"] for attr in car["attributes"]}
@@ -57,6 +60,10 @@ def create_cars_bot_message(car: dict, config: dict):
         fuel_type=car_attributes.get("fuel"),
     )
 
+    seller_active_years, seller_reviews = get_seller_info(seller_name, seller_id)
+    seller_active_years = "N/A" if not seller_active_years else seller_active_years
+    seller_reviews = "N/A" if not seller_reviews else seller_reviews
+
     message = "🚗 **New Car Listing Found!**\n"
     message += f"#{make}\n"
     message += f"🚘 Title: {translate_to_english(car['title'])}\n"
@@ -70,5 +77,6 @@ def create_cars_bot_message(car: dict, config: dict):
     message += f"🛣️ Km: {actual_mileage}\n"
     message += f"⛽ Fuel: {fuel}\n"
     message += f"🚦 Transmission: {transmission}\n"
+    message += f"📞 Seller: {seller_active_years} active, {seller_reviews} reviews"
     message += f"{price_str}\n"
     return message, picture_url, listing_url, otomoto_url
