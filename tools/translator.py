@@ -1,6 +1,6 @@
 from deep_translator import GoogleTranslator
 
-from tools.logging import logger
+from tools.logger import logger
 
 translator_en = GoogleTranslator(source="auto", target="en")
 translator_ru = GoogleTranslator(source="auto", target="ru")

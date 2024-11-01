@@ -2,7 +2,7 @@ import json
 import requests
 from typing import Optional
 
-from tools.logging import logger
+from tools.logger import logger
 
 
 def send_telegram_message(

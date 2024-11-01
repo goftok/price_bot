@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 from tools.telegram import send_telegram_message
-from tools.logging import logger
+from tools.logger import logger
 
 load_dotenv()
 

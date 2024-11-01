@@ -6,7 +6,7 @@ import requests
 import urllib.parse
 from typing import Optional
 
-from tools.logging import logger
+from tools.logger import logger
 
 NUMBER_OF_RANDOM_OFFERS = 5
 YEAR_RANGE = 1

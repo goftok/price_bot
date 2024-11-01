@@ -9,7 +9,7 @@ from random import randint
 from config import config
 from tools.secrets import BOT_TOKEN
 from tools.destination import NIJMEGEN, LEUVEN, calculate_driving_distance
-from tools.logging import logger
+from tools.logger import logger
 from tools.secrets import send_errors_to_all_chats
 from tools.telegram import send_telegram_message
 from tools.utils import create_urls

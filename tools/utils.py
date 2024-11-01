@@ -1,6 +1,6 @@
 from typing import Optional
 
-from tools.logging import logger
+from tools.logger import logger
 
 
 template_config = {
