@@ -187,7 +187,7 @@ config = {
         "min_year": 2009,
         "max_year": None,
         "min_mileage": None,
-        "max_mileage": 180000,
+        "max_mileage": 220000,
         "chat_id": CHAT_ID6,
         "not_allowed_models": None,
         "allowed_models": None,
