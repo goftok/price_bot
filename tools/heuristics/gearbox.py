@@ -24,6 +24,7 @@ automatic_keywords = [
 ]
 exclusion_keywords = [
     "phare",
+    "phares",
     "essuie",
     "essuie-glace",
     "lumière",
@@ -31,9 +32,13 @@ exclusion_keywords = [
     "airconditioning",
     "vergrendelsysteem",
     "laser",
+    "lasers",
+    "inklapbare",
+    "spiegels",
     "anti",
     "feux",
     "light",
+    "lights",
     "wiper",
     "airco",
 ]
