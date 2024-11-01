@@ -76,6 +76,6 @@ def create_cars2_bot_message(car: dict, config: dict):
     message += f"🛣️ Km: {actual_mileage}\n"
     message += f"⛽ Fuel: {fuel}\n"
     message += f"🚦 Transmission: {transmission}\n"
-    message += f"📞 Seller: {seller_active_years} active, {seller_reviews} reviews"
+    message += f"📞 Seller: {seller_active_years} active, {seller_reviews} reviews\n"
     message += f"{price_str}\n"
     return message, picture_url, listing_url, otomoto_url
