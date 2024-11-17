@@ -67,7 +67,7 @@ def create_cars2_bot_message(car: dict, config: dict):
     message += f"#{make}\n"
     message += f"🚘 Title: {car['title']}\n"
     message += f"💰 Price: €{price_euro} ({price_type})\n"
-    message += f"💰 Price info v3: {get_price_info(price_euro, lowest_price_int, make, model)}\n"
+    message += f"💰 Price info v5: {get_price_info(price_euro, lowest_price_int, make, model)}\n"
     message += f"📍 Location: {city}, {country}\n"
     message += f"📍 Distance Herent: {distance_herent:.2f} km\n"
     message += f"🗒️ Description: {car['categorySpecificDescription']}\n"

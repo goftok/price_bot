@@ -79,9 +79,11 @@ def get_price_info(
     make: Optional[str] = None,
     model: Optional[str] = None,
 ) -> str:
-    if belgium_price == 0 or poland_price == 0 or model is None or make is None:
+    if belgium_price < 200 or poland_price == 0 or model is None or make is None:
         return "N/A"
-    elif poland_price > belgium_price * 1.3 and (poland_price - belgium_price * 1.3) > 1000:
+    elif (
+        poland_price > belgium_price * 1.3 and (poland_price - belgium_price * 1.3) > 1000
+    ) or poland_price - belgium_price > 2000:
         return "Super Low"
     elif poland_price > belgium_price:
         return "Low"
