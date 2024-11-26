@@ -1,4 +1,4 @@
-from ads_specific.cars import create_cars_bot_message
+from ads_specific.cars_2dehands import create_cars_bot_message
 from config import config
 
 example_dict = {

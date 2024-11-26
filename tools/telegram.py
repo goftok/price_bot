@@ -11,6 +11,7 @@ def send_telegram_message(
     message: str,
     image_url: Optional[str] = None,
     two_dehands_url: Optional[str] = None,
+    autoscout24_url: Optional[str] = None,
     otomoto_url: Optional[str] = None,
 ):
     if image_url:
@@ -32,6 +33,9 @@ def send_telegram_message(
 
     if two_dehands_url:
         buttons.append({"text": "2dehands", "url": two_dehands_url})
+
+    if autoscout24_url:
+        buttons.append({"text": "Autoscout24", "url": autoscout24_url})
 
     if otomoto_url:
         buttons.append({"text": "Otomoto", "url": otomoto_url})

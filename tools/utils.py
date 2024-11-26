@@ -15,36 +15,13 @@ template_config = {
     "not_allowed_models": (type(None), list),
     "allowed_models": (type(None), list),
     "is_automatic_transmission": (type(None), bool),
-    "url_numbers": int,
+    "url_numbers": (type(None), int),
     "function_for_message": callable,
     "api_link": str,
     "max_distance_nijmegen": (type(None), int),
     "max_distance_leuven": (type(None), int),
     "query_params": dict,
 }
-
-
-def create_urls(config: dict, limit: int = 100) -> list:
-    urls = []
-    for i in range(config["url_numbers"]):
-        query_params = config["query_params"].copy()
-        query_params["offset"] = i * limit
-        query_params["limit"] = limit
-
-        # Handling list values in query parameters
-        query_string_parts = []
-        for key, value in query_params.items():
-            if isinstance(value, list):
-                for v in value:
-                    query_string_parts.append(f"{key}[]={str(v)}")
-            else:
-                query_string_parts.append(f"{key}={str(value)}")
-
-        query_string = "&".join(query_string_parts)
-        url = f"{config['api_link']}?{query_string}"
-        urls.append(url)
-
-    return urls
 
 
 def get_int_from_itemId(item_id: str) -> int:
@@ -79,6 +56,8 @@ def get_price_info(
     make: Optional[str] = None,
     model: Optional[str] = None,
 ) -> str:
+    if type(belgium_price) is not int or type(poland_price) is not int:
+        raise TypeError("Both prices should be integers")
     if belgium_price < 200 or poland_price == 0 or model is None or make is None:
         return "N/A"
     elif (

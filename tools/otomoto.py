@@ -67,6 +67,7 @@ model_dict = {
 fuel_dict = {
     "Benzine": "petrol",
     "Diesel": "diesel",
+    "Gasoline": "petrol",
     # TODO
 }
 
@@ -138,14 +139,12 @@ def create_otomoto_url(
 
     # Optional mileage filter
     if mileage:
-        if not isinstance(mileage, str):
-            raise ValueError("Mileage type must be string")
-
-        # check if it is possible to convert to int
-        try:
-            mileage = int(mileage)
-        except ValueError:
-            raise ValueError("Mileage must be convertable to an integer")
+        if isinstance(mileage, str):
+            # check if it is possible to convert to int
+            try:
+                mileage = int(mileage)
+            except ValueError:
+                raise ValueError("Mileage must be convertable to an integer")
 
         if mileage < 0 or mileage > 1000000:
             raise ValueError("Mileage must be between 0 and 1000000")
