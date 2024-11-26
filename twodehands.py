@@ -25,7 +25,7 @@ ERROR_CODES = [502, 504]  # 429
 
 
 def create_twodehands_urls(config: dict, limit: int = 100) -> list:
-    assert config["url_numbers"] is None, "url_numbers is not defined in configuration"
+    assert config["url_numbers"] is not None, "url_numbers is not defined in configuration"
     urls = []
     for i in range(config["url_numbers"]):
         query_params = config["query_params"].copy()

@@ -12,7 +12,7 @@ def create_cars_autoscout_bot_message(car: dict, config: dict) -> str:
     if len(pictures) > 0:
         picture_url = pictures[0].replace("/250x188.webp", "/1000x752.webp")
     else:
-        picture_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQppJKxBxJI-9UWLe2VVmzuBd24zsq4_ihxZw&s"
+        picture_url = None
 
     make = car["vehicle"].get("make", "N/A").lower()
     model = car["vehicle"].get("model", "N/A")
