@@ -10,7 +10,7 @@ from tools.heuristics.mileage import extract_mileage_from_ad
 
 
 def create_cars2_bot_message(car: dict, config: dict):
-    price_euro = car["priceInfo"]["priceCents"] / 100
+    price_euro = int(car["priceInfo"]["priceCents"] / 100)
     price_type = car["priceInfo"]["priceType"]
     main_link = config["api_link"].split("/lrp")[0]
     listing_url = main_link + car["vipUrl"]

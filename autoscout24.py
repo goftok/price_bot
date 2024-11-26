@@ -117,11 +117,17 @@ def send_ads(config: dict, ads: list):
                 config["last_id"] = ads[0]["id"]
                 sorted_ads = []
 
+        filtered_ads = []
+        for ad in sorted_ads:
+            if check_conditions(config, ad):
+                filtered_ads.append(ad)
+
+        if not filtered_ads:
+            return
+
         logger.info(f"Last found add id for '{config['source']}': {config["last_id"]}")
 
-        for ad in sorted_ads:
-            if not check_conditions(config, ad):
-                continue
+        for ad in filtered_ads:
             message, picture_url, listing_url, otomoto_url = config["function_for_message"](ad, config)
             send_telegram_message(
                 bot_token=BOT_TOKEN,
