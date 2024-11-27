@@ -1,7 +1,8 @@
 from ads_specific.cars_2dehands import create_cars_bot_message
-from ads_specific.cars2_2dehands import create_cars2_bot_message
+from ads_specific.cars_2dehands2 import create_cars2_bot_message
+from ads_specific.cars_2dehands3 import create_cars3_bot_message
 from ads_specific.cars_autoscout24 import create_cars_autoscout_bot_message
-from tools.secrets import CHAT_ID1, CHAT_ID2, CHAT_ID4
+from tools.secrets import CHAT_ID1, CHAT_ID2, CHAT_ID4, CHAT_ID7
 
 config = {
     "cars_autoscout24_1": {
@@ -48,6 +49,31 @@ config = {
         "is_automatic_transmission": None,
         "url_numbers": 6,
         "function_for_message": create_cars2_bot_message,
+        "api_link": "https://www.2dehands.be/lrp/api/search",
+        "max_distance_nijmegen": None,
+        "max_distance_leuven": None,
+        "query_params": {
+            "attributesById": ["10898"],
+            "attributesByKey": ["offeredSince:Vandaag"],
+            "l1CategoryId": "91",
+            "sortBy": "SORT_INDEX",
+            "sortOrder": "DECREASING",
+        },
+    },
+    "cars_2dehands_7": {
+        "source": "cars-2dehands7",
+        "min_price": None,
+        "max_price": 15000,
+        "min_year": None,
+        "max_year": None,
+        "min_mileage": None,
+        "max_mileage": None,
+        "chat_id": CHAT_ID7,
+        "not_allowed_models": None,
+        "allowed_models": None,
+        "is_automatic_transmission": None,
+        "url_numbers": 6,
+        "function_for_message": create_cars3_bot_message,
         "api_link": "https://www.2dehands.be/lrp/api/search",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,

@@ -9,7 +9,7 @@ from tools.heuristics.year import extract_year_from_ad
 from tools.heuristics.mileage import extract_mileage_from_ad
 
 
-def create_cars2_bot_message(car: dict, config: dict):
+def create_cars3_bot_message(car: dict, config: dict):
     price_euro = int(car["priceInfo"]["priceCents"] / 100)
     price_type = car["priceInfo"]["priceType"]
     main_link = config["api_link"].split("/lrp")[0]
@@ -63,19 +63,18 @@ def create_cars2_bot_message(car: dict, config: dict):
     seller_active_years = "N/A" if not seller_active_years else seller_active_years
     seller_reviews = "N/A" if not seller_reviews else seller_reviews
 
-    message = "🚗 **New Car Listing Found!**\n"
-    message += f"#{make}\n"
-    message += f"🚘 Title: {car['title']}\n"
-    message += f"💰 Price: €{price_euro} ({price_type})\n"
-    message += f"💰 Price info v5: {get_price_info(price_euro, lowest_price_int, make, model)}\n"
-    message += f"📍 Location: {city}, {country}\n"
-    message += f"📍 Distance Herent: {distance_herent:.2f} km\n"
-    message += f"🗒️ Description: {car['categorySpecificDescription']}\n"
-    message += f"🛞 Model: {model if model else 'N/A'}\n"
-    message += f"📅 Year: {actual_year}\n"
-    message += f"🛣️ Km: {actual_mileage}\n"
-    message += f"⛽ Fuel: {fuel}\n"
-    message += f"🚦 Transmission: {transmission}\n"
-    message += f"📞 Seller: {seller_active_years} active, {seller_reviews} reviews\n"
+    message = f"#{make}\n"
+    message += f"🚘 {car['title']}\n"
+    message += f"💰 €{price_euro} ({price_type})\n"
+    message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"
+    message += f"📍 {city}, {country}\n"
+    message += f"📍 Herent: {distance_herent:.2f} km\n"
+    # message += f"🗒️ {car['categorySpecificDescription']}\n"
+    message += f"🛞 {model if model else 'N/A'}\n"
+    message += f"📅 {actual_year}\n"
+    message += f"🛣️ {actual_mileage}\n"
+    message += f"⛽ {fuel}\n"
+    message += f"🚦 {transmission}\n"
+    message += f"📞 {seller_active_years} active, {seller_reviews} reviews\n"
     message += f"{price_str}\n"
     return message, picture_url, listing_url, otomoto_url

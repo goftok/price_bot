@@ -1,6 +1,5 @@
 import os
 import time
-
 import requests
 from art import tprint
 
@@ -22,8 +21,10 @@ def main():
     pid = os.getpid()
     logger.info(f"Process PID: {pid}")
 
-    for ad_config_name in config:
-        ad_config = config[ad_config_name]
+    config_copy = config.copy()
+
+    for ad_config_name in config_copy:
+        ad_config = config_copy[ad_config_name]
         validate_config(ad_config)
         ad_config["last_id"] = None
         if "autoscout24" in ad_config_name:
@@ -33,8 +34,8 @@ def main():
             ad_config["urls"] = create_twodehands_urls(ad_config)
 
     while True:
-        autoscout24_main()
-        twodehands_main()
+        autoscout24_main(config_copy)
+        twodehands_main(config_copy)
 
 
 def run_with_restart():
@@ -43,7 +44,7 @@ def run_with_restart():
             main()
         except Exception as e:
             logger.error(f"Main function crashed: {e}")
-            logger.info("Restarting in 5 seconds...")
+            logger.info("Reloading configuration and restarting in 5 seconds...")
             time.sleep(5)
 
 

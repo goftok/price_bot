@@ -1,7 +1,5 @@
-import sys
 import time
 import requests
-from config import config
 
 from tools.secrets import BOT_TOKEN
 from tools.logger import logger
@@ -60,7 +58,7 @@ def get_ads(url: str, ad_config: dict) -> list:
     except Exception as e:
         logger.error(f"Error while get_ads {url}: {e}")
         send_errors_to_all_chats(e)
-        sys.exit(1)
+        raise e
     return ads, ad_config
 
 
@@ -142,10 +140,10 @@ def send_ads(config: dict, ads: list):
     except Exception as e:
         logger.error(f"Error while send_ads : {e}")
         send_errors_to_all_chats(e)
-        sys.exit(1)
+        raise e
 
 
-def autoscout24_main():
+def autoscout24_main(config: dict):
     for ad_config_name in config:
         if "autoscout24" not in ad_config_name:
             continue
@@ -163,8 +161,3 @@ def autoscout24_main():
             logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
 
             ad_config["start_time"] = time.time()
-
-
-if __name__ == "__main__":
-    config["cars_autoscout24_1"]["start_id"] = 560
-    create_autoscout24_url(config["cars_autoscout24_1"])

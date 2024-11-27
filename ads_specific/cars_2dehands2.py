@@ -1,6 +1,5 @@
-from tools.destination import calculate_driving_distance, LEUVEN
+from tools.destination import calculate_driving_distance, HERENT
 from tools.otomoto import query_otomoto_and_get_average_price
-from tools.translator import translate_to_english
 from tools.twodehands import get_seller_info
 from tools.utils import convert_transmition, get_image_url, get_price_info
 
@@ -10,7 +9,7 @@ from tools.heuristics.year import extract_year_from_ad
 from tools.heuristics.mileage import extract_mileage_from_ad
 
 
-def create_cars_bot_message(car: dict, config: dict):
+def create_cars2_bot_message(car: dict, config: dict):
     price_euro = int(car["priceInfo"]["priceCents"] / 100)
     price_type = car["priceInfo"]["priceType"]
     main_link = config["api_link"].split("/lrp")[0]
@@ -28,7 +27,7 @@ def create_cars_bot_message(car: dict, config: dict):
 
     make = car["vipUrl"].split("/")[3]
     model = car_attributes.get("model")
-    distance_leuven = calculate_driving_distance(LEUVEN, (lat, long))
+    distance_herent = calculate_driving_distance(HERENT, (lat, long))
 
     year = car_attributes.get("constructionYear")
     year_heristics = extract_year_from_ad(full_text)
@@ -65,12 +64,12 @@ def create_cars_bot_message(car: dict, config: dict):
     seller_reviews = "N/A" if not seller_reviews else seller_reviews
 
     message = f"#{make}\n"
-    message += f"🚘 {translate_to_english(car['title'])}\n"
+    message += f"🚘 {car['title']}\n"
     message += f"💰 €{price_euro} ({price_type})\n"
     message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"
     message += f"📍 {city}, {country}\n"
-    message += f"📍 Leuven {distance_leuven:.2f} km\n"
-    message += f"🗒️ {translate_to_english(car['categorySpecificDescription'])}\n"
+    message += f"📍 Herent: {distance_herent:.2f} km\n"
+    message += f"🗒️ {car['categorySpecificDescription']}\n"
     message += f"🛞 {model if model else 'N/A'}\n"
     message += f"📅 {actual_year}\n"
     message += f"🛣️ {actual_mileage}\n"

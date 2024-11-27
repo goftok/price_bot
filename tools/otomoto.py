@@ -276,8 +276,8 @@ def get_average_price_str(offers: list) -> str:
     higher_price_avg_euro = int(higher_price_avg / PLN_EURO_EXCHANGE_RATE)
 
     return (
-        f"💸 Otomoto EURO: {lower_price_avg_euro}-{higher_price_avg_euro}\n"
-        f"💸 Otomoto PLN: {lower_price_avg}-{higher_price_avg}"
+        f"🇵🇱 €{lower_price_avg_euro}-{higher_price_avg_euro}\n"
+        f"🇵🇱 zl{lower_price_avg}-{higher_price_avg}"
     ), lower_price_avg_euro
 
 

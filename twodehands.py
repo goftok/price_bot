@@ -1,10 +1,8 @@
-import sys
 import time
 import json
 import requests
 from random import randint
 
-from config import config
 from tools.secrets import BOT_TOKEN
 from tools.destination import NIJMEGEN, LEUVEN, calculate_driving_distance
 from tools.logger import logger
@@ -72,7 +70,7 @@ def get_ads(urls: list, limit: int) -> list:
         except Exception as e:
             logger.error(f"Error while get_ads {url}: {e}")
             send_errors_to_all_chats(e)
-            sys.exit(1)
+            raise e
     return ads
 
 
@@ -226,7 +224,7 @@ def send_ads(ads: list, config: dict) -> None:
         send_telegram_message(BOT_TOKEN, config["chat_id"], f"Error fetching data. Check logs for more info. {e}")
 
 
-def twodehands_main():
+def twodehands_main(config: dict):
     cache_ads = {}
     for ad_config in config:
         if "2dehands" not in ad_config:
