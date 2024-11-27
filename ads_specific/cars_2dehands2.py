@@ -63,7 +63,7 @@ def create_cars2_bot_message(car: dict, config: dict):
     seller_active_years = "N/A" if not seller_active_years else seller_active_years
     seller_reviews = "N/A" if not seller_reviews else seller_reviews
 
-    message = f"#{make}\n"
+    message = f"#{make.replace("-", "_")}\n"
     message += f"🚘 {car['title']}\n"
     message += f"💰 €{price_euro} ({price_type})\n"
     message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"

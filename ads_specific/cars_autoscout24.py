@@ -35,7 +35,7 @@ def create_cars_autoscout_bot_message(car: dict, config: dict) -> str:
         mileage=mileage,
         fuel_type=fuel_type,
     )
-    message = f"#{make}\n"
+    message = f"#{make.replace("-", "_")}\n"
     message += f"🚘 {title}\n"
     message += f"💰 €{price_euro}\n"
     message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"
