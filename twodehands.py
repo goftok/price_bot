@@ -1,7 +1,8 @@
 import time
 import json
 import requests
-from random import randint
+
+# from random import randint
 
 from tools.secrets import BOT_TOKEN
 from tools.destination import NIJMEGEN, LEUVEN, calculate_driving_distance
@@ -16,9 +17,9 @@ from tools.heuristics.year import extract_year_from_ad
 from tools.heuristics.mileage import extract_mileage_from_ad
 
 LIMIT = 100
-SLEEP_TIME = 17  # seconds
+SLEEP_TIME = 10.1  # seconds
 RETRY_TIME = 60  # seconds
-MIN_WAIT_TIME = 120  # seconds
+MIN_WAIT_TIME = 60.1  # seconds
 ERROR_CODES = [502, 504]  # 429
 
 
@@ -51,7 +52,8 @@ def get_ads(urls: list, limit: int) -> list:
     for url in urls:
         try:
             response = requests.get(url)
-            time.sleep(randint(0, SLEEP_TIME))
+            # time.sleep(randint(0, SLEEP_TIME))
+            time.sleep(SLEEP_TIME)
 
             # check if error code is 502 and sleep for 10 seconds
             if response.status_code in ERROR_CODES:

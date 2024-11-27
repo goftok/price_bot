@@ -62,20 +62,21 @@ def create_cars_bot_message(car: dict, config: dict):
 
     seller_active_years, seller_reviews = get_seller_info(seller_name, seller_id)
     seller_active_years = "N/A" if not seller_active_years else seller_active_years
-    seller_reviews = "N/A" if not seller_reviews else seller_reviews
+    seller_reviews = "0" if not seller_reviews else seller_reviews
 
     message = f"#{make.replace("-", "_")}\n"
     message += f"🚘 {translate_to_english(car['title'])}\n"
-    message += f"💰 €{price_euro} ({price_type})\n"
-    message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"
-    message += f"📍 {city}, {country}\n"
-    message += f"📍 Leuven {distance_leuven:.2f} km\n"
-    message += f"🗒️ {translate_to_english(car['categorySpecificDescription'])}\n"
+    message += f"🇧🇪 €{price_euro} ({price_type})\n"
+    message += f"{price_str}\n"
+    message += f"💰 {get_price_info(price_euro, lowest_price_int, make, model)} v5\n"
     message += f"🛞 {model if model else 'N/A'}\n"
     message += f"📅 {actual_year}\n"
     message += f"🛣️ {actual_mileage}\n"
     message += f"⛽ {fuel}\n"
     message += f"🚦 {transmission}\n"
-    message += f"📞 {seller_active_years} active, {seller_reviews} reviews\n"
-    message += f"{price_str}\n"
+    message += f"📞 {seller_active_years}, {seller_reviews} reviews. {seller_name}\n"
+    message += f"📍 {city}, {country}\n"
+    message += f"📍 Leuven {distance_leuven:.2f} km\n"
+    message += f"🗒️ {translate_to_english(car['categorySpecificDescription'])}\n"
+
     return message, picture_url, listing_url, otomoto_url

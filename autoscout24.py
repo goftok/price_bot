@@ -7,7 +7,7 @@ from tools.telegram import send_telegram_message
 from tools.secrets import send_errors_to_all_chats
 
 ERROR_CODES = [403, 404]  # 429
-MIN_WAIT_TIME = 120  # seconds
+MIN_WAIT_TIME = 60.1  # seconds
 
 
 def create_autoscout24_url(config: dict) -> str:

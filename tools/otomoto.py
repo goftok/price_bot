@@ -10,7 +10,7 @@ from tools.logger import logger
 
 NUMBER_OF_RANDOM_OFFERS = 5
 YEAR_RANGE = 1
-PLN_EURO_EXCHANGE_RATE = 4.28
+PLN_EURO_EXCHANGE_RATE = 4.3
 LIMIT_OF_CHEAPEST_OFFERS = 8
 MILEAGE_RANGE = 30000
 OTOMOTO_SLEEP_TIME = 1
@@ -267,7 +267,7 @@ def get_average_price_str(offers: list) -> str:
         higher_price_list.append(higher_price)
 
     if len(lower_price_list) == 0 or len(higher_price_list) == 0:
-        return "No price data available", 0
+        return "N/A", 0
 
     lower_price_avg = int(sum(lower_price_list) / len(lower_price_list))
     higher_price_avg = int(sum(higher_price_list) / len(higher_price_list))
@@ -275,10 +275,7 @@ def get_average_price_str(offers: list) -> str:
     lower_price_avg_euro = int(lower_price_avg / PLN_EURO_EXCHANGE_RATE)
     higher_price_avg_euro = int(higher_price_avg / PLN_EURO_EXCHANGE_RATE)
 
-    return (
-        f"🇵🇱 €{lower_price_avg_euro}-{higher_price_avg_euro}\n"
-        f"🇵🇱 zl{lower_price_avg}-{higher_price_avg}"
-    ), lower_price_avg_euro
+    return (f"🇵🇱 €{lower_price_avg_euro}-{higher_price_avg_euro}"), lower_price_avg_euro
 
 
 def query_otomoto_and_get_average_price(

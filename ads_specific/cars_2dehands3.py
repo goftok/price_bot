@@ -65,16 +65,16 @@ def create_cars3_bot_message(car: dict, config: dict):
 
     message = f"#{make.replace("-", "_")}\n"
     message += f"🚘 {car['title']}\n"
-    message += f"💰 €{price_euro} ({price_type})\n"
-    message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"
-    message += f"📍 {city}, {country}\n"
-    message += f"📍 Tielt-Winge: {distance_tielt_winge:.2f} km\n"
-    # message += f"🗒️ {car['categorySpecificDescription']}\n"
+    message += f"🇧🇪 €{price_euro} ({price_type})\n"
+    message += f"{price_str}\n"
+    message += f"💰 {get_price_info(price_euro, lowest_price_int, make, model)} v5\n"
     message += f"🛞 {model if model else 'N/A'}\n"
     message += f"📅 {actual_year}\n"
     message += f"🛣️ {actual_mileage}\n"
     message += f"⛽ {fuel}\n"
     message += f"🚦 {transmission}\n"
     message += f"📞 {seller_active_years}, {seller_reviews} reviews. {seller_name}\n"
-    message += f"{price_str}\n"
+    message += f"📍 {city}, {country}\n"
+    message += f"📍 Tielt-Winge: {distance_tielt_winge:.2f} km\n"
+
     return message, picture_url, listing_url, otomoto_url

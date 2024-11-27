@@ -37,15 +37,15 @@ def create_cars_autoscout_bot_message(car: dict, config: dict) -> str:
     )
     message = f"#{make.replace("-", "_")}\n"
     message += f"🚘 {title}\n"
-    message += f"💰 €{price_euro}\n"
-    message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"
-    message += f"📍 {city}, {country}\n"
-    # message += f"🗒️ Description: {car['categorySpecificDescription']}\n"
+    message += f"🇧🇪 €{price_euro}\n"
+    message += f"{price_str}\n"
+    message += f"💰 {get_price_info(price_euro, lowest_price_int, make, model)} v5\n"
     message += f"🛞 {model if model else 'N/A'}\n"
     message += f"📅 {year}\n"
     message += f"🛣️ {mileage}\n"
     message += f"⛽ {fuel_type}\n"
     message += f"🚦 {transmission}\n"
-    message += f"{price_str}\n"
+    message += f"📍 {city}, {country}\n"
+    # message += f"🗒️ Description: {car['categorySpecificDescription']}\n"
 
     return message, picture_url, listing_url, otomoto_url
