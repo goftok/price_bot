@@ -1,4 +1,5 @@
 import os
+import time
 
 import requests
 from art import tprint
@@ -36,5 +37,15 @@ def main():
         twodehands_main()
 
 
+def run_with_restart():
+    while True:
+        try:
+            main()
+        except Exception as e:
+            logger.error(f"Main function crashed: {e}")
+            logger.info("Restarting in 5 seconds...")
+            time.sleep(5)
+
+
 if __name__ == "__main__":
-    main()
+    run_with_restart()

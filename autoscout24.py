@@ -8,7 +8,7 @@ from tools.logger import logger
 from tools.telegram import send_telegram_message
 from tools.secrets import send_errors_to_all_chats
 
-ERROR_CODES = [403]  # 429
+ERROR_CODES = [403, 404]  # 429
 MIN_WAIT_TIME = 120  # seconds
 
 
@@ -16,11 +16,12 @@ def create_autoscout24_url(config: dict) -> str:
     def get_correct_id_url(query_string: str) -> str:
         start_id = config["start_id"]
         for i in range(100):
-            url = f"{config['api_link']}/as24-search-funnel_main-{start_id + i}/lst.json?{query_string}"
+            current_id = start_id + i
+            url = f"{config['api_link']}/as24-search-funnel_main-{current_id}/lst.json?{query_string}"
 
             response = requests.get(url)
             if response.status_code == 200:
-                return url, start_id + i
+                return url, current_id
         return None, None
 
     query_params = config["query_params"].copy()
