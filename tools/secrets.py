@@ -13,6 +13,7 @@ CHAT_ID2 = os.getenv("CHAT_ID2")
 CHAT_ID4 = os.getenv("CHAT_ID4")
 # CHAT_ID5 = os.getenv("CHAT_ID5")
 # CHAT_ID6 = os.getenv("CHAT_ID6")
+CHAT_ID7 = os.getenv("CHAT_ID7")
 
 
 if not BOT_TOKEN or not CHAT_ID1:
@@ -37,6 +38,10 @@ if not CHAT_ID4:
 # if not CHAT_ID6:
 #     logger.warning("WARNING: CHAT_ID6 is not set.")
 #     CHAT_ID6 = CHAT_ID1
+
+if not CHAT_ID7:
+    logger.warning("WARNING: CHAT_ID7 is not set.")
+    CHAT_ID7 = CHAT_ID1
 
 
 def send_errors_to_all_chats(e: Exception) -> None:

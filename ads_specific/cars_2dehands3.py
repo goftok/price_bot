@@ -1,4 +1,4 @@
-from tools.destination import calculate_driving_distance, HERENT
+from tools.destination import calculate_driving_distance, TIELT_WINGE
 from tools.otomoto import query_otomoto_and_get_average_price
 from tools.twodehands import get_seller_info
 from tools.utils import convert_transmition, get_image_url, get_price_info
@@ -27,7 +27,7 @@ def create_cars3_bot_message(car: dict, config: dict):
 
     make = car["vipUrl"].split("/")[3]
     model = car_attributes.get("model")
-    distance_herent = calculate_driving_distance(HERENT, (lat, long))
+    distance_tielt_winge = calculate_driving_distance(TIELT_WINGE, (lat, long))
 
     year = car_attributes.get("constructionYear")
     year_heristics = extract_year_from_ad(full_text)
@@ -68,7 +68,7 @@ def create_cars3_bot_message(car: dict, config: dict):
     message += f"💰 €{price_euro} ({price_type})\n"
     message += f"💰v5 {get_price_info(price_euro, lowest_price_int, make, model)}\n"
     message += f"📍 {city}, {country}\n"
-    message += f"📍 Herent: {distance_herent:.2f} km\n"
+    message += f"📍 Tielt-Winge: {distance_tielt_winge:.2f} km\n"
     # message += f"🗒️ {car['categorySpecificDescription']}\n"
     message += f"🛞 {model if model else 'N/A'}\n"
     message += f"📅 {actual_year}\n"
