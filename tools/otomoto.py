@@ -162,8 +162,12 @@ def create_otomoto_url(
             fuel_type = "petrol"
         filters.append({"name": "filter_enum_fuel_type", "value": fuel_type})
 
-    # Adding sorting on acceding price and filter on car category
-    filters.extend([{"name": "order", "value": "filter_float_price:asc"}, {"name": "category_id", "value": "29"}])
+    # filter on car category
+    filters.extend([{"name": "category_id", "value": "29"}])
+    #  sorting on acceding price
+    filters.extend([{"name": "order", "value": "filter_float_price:asc"}])
+    # remove damaged cars
+    filters.extend([{"name": "filter_enum_damaged", "value": "0"}])
 
     # GraphQL constant variables
     variables = {
