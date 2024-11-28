@@ -267,7 +267,7 @@ def get_average_price_str(offers: list) -> str:
         higher_price_list.append(higher_price)
 
     if len(lower_price_list) == 0 or len(higher_price_list) == 0:
-        return "N/A", 0
+        return "🇵🇱 N/A", 0
 
     lower_price_avg = int(sum(lower_price_list) / len(lower_price_list))
     higher_price_avg = int(sum(higher_price_list) / len(higher_price_list))
