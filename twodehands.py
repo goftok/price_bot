@@ -64,8 +64,8 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
 
             response.raise_for_status()
             data = response.json()
-
-            last_found_ad_id = send_ads(ads=data["listings"], config=config)
+            is_last_url = urls.index(url) == len(urls) - 1
+            last_found_ad_id = send_ads(ads=data["listings"], config=config, is_last_url=is_last_url)
             if last_id is not None:
                 last_id = max(last_id, last_found_ad_id)
             else:
@@ -185,7 +185,7 @@ def check_conditions(config: dict, ad: dict) -> bool:
     return True
 
 
-def send_ads(ads: list, config: dict) -> int:
+def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
     filtered_ads = []
     for idx, ad in enumerate(ads):
 
@@ -197,7 +197,7 @@ def send_ads(ads: list, config: dict) -> int:
                 f"Found ad: '{get_int_from_itemId(ad['itemId'])}' for "
                 f"'{config['source']}' with index of '{idx}' size: '{len(ads)}'"
             )
-            if idx > len(ads) * 0.9:
+            if is_last_url and idx > len(ads) * 0.9:
                 send_errors_to_all_chats(
                     f"WARNING for '{config['source']}'! Ad found at '{idx}' size: '{len(ads)}. "
                     "Increase number of urls to check."
