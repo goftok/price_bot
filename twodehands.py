@@ -66,7 +66,10 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
             data = response.json()
 
             last_found_ad_id = send_ads(ads=data["listings"], config=config)
-            last_id = max(last_id, last_found_ad_id)
+            if last_id is not None:
+                last_id = max(last_id, last_found_ad_id)
+            else:
+                last_id = last_found_ad_id
 
             ads.extend(data["listings"])
 
@@ -182,7 +185,7 @@ def check_conditions(config: dict, ad: dict) -> bool:
     return True
 
 
-def send_ads(ads: list, config: dict) -> None:
+def send_ads(ads: list, config: dict) -> int:
     filtered_ads = []
     for idx, ad in enumerate(ads):
 
@@ -234,10 +237,10 @@ def send_ads(ads: list, config: dict) -> None:
 
 def twodehands_main(config: dict):
     cache_ads = {}
-    for ad_config in config:
-        if "2dehands" not in ad_config:
+    for ad_config_name in config:
+        if "2dehands" not in ad_config_name:
             continue
-        ad_config = config[ad_config]
+        ad_config = config[ad_config_name]
         query_params = json.dumps(ad_config["query_params"], sort_keys=True)
         cache_key = f"{ad_config['api_link']}_{ad_config['url_numbers']}_{query_params}"
 
