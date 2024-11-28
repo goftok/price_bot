@@ -2,6 +2,7 @@ import os
 import time
 import requests
 from art import tprint
+from copy import deepcopy
 
 from config import config
 from twodehands import create_twodehands_urls, twodehands_main
@@ -21,7 +22,7 @@ def main():
     pid = os.getpid()
     logger.info(f"Process PID: {pid}")
 
-    config_copy = config.copy()
+    config_copy = deepcopy(config)
 
     for ad_config_name in config_copy:
         ad_config = config_copy[ad_config_name]
