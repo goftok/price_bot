@@ -47,8 +47,9 @@ def create_twodehands_urls(config: dict, limit: int = 100) -> list:
     return urls
 
 
-def get_ads(urls: list, limit: int) -> list:
+def get_ads(urls: list, config: dict, limit: int) -> list:
     ads = []
+    last_id = config["last_id"]
     for url in urls:
         try:
             response = requests.get(url)
@@ -63,6 +64,10 @@ def get_ads(urls: list, limit: int) -> list:
 
             response.raise_for_status()
             data = response.json()
+
+            last_found_ad_id = send_ads(ads=data["listings"], config=config)
+            last_id = max(last_id, last_found_ad_id)
+
             ads.extend(data["listings"])
 
             # check if there is no more ads in api response
@@ -73,6 +78,8 @@ def get_ads(urls: list, limit: int) -> list:
             logger.error(f"Error while get_ads {url}: {e}")
             send_errors_to_all_chats(e)
             raise e
+
+    config["last_id"] = last_id
     return ads
 
 
@@ -197,17 +204,14 @@ def send_ads(ads: list, config: dict) -> None:
     sorted_ads = sorted(filtered_ads, key=lambda x: get_int_from_itemId(x["itemId"]), reverse=True)
 
     if not sorted_ads:
-        return
+        return config["last_id"]
 
     last_found_ad_id = get_int_from_itemId(sorted_ads[0]["itemId"])
     logger.info(f"Last found add id for '{config['source']}': {last_found_ad_id}")
 
     # don't send the adds from the first iteration
     if config["last_id"] is None:
-        config["last_id"] = last_found_ad_id
-        return
-
-    config["last_id"] = last_found_ad_id
+        return last_found_ad_id
 
     # send the adds
     try:
@@ -221,9 +225,11 @@ def send_ads(ads: list, config: dict) -> None:
                 two_dehands_url=listing_url,
                 otomoto_url=otomoto_url,
             )
+        return last_found_ad_id
     except Exception as e:
         logger.error(f"Error fetching data: {e}")
         send_telegram_message(BOT_TOKEN, config["chat_id"], f"Error fetching data. Check logs for more info. {e}")
+        return config["last_id"]
 
 
 def twodehands_main(config: dict):
@@ -237,13 +243,13 @@ def twodehands_main(config: dict):
 
         if cache_key in cache_ads:
             ads = cache_ads[cache_key]
+            last_id = send_ads(ads=ads, config=ad_config)
+            ad_config["last_id"] = last_id
             # logger.info("Using cached ads")
         else:
-            ads = get_ads(urls=ad_config["urls"], limit=LIMIT)
+            ads = get_ads(urls=ad_config["urls"], config=ad_config, limit=LIMIT)
             cache_ads[cache_key] = ads
             # logger.info("Fetched new ads")
-
-        send_ads(ads=ads, config=ad_config)
 
         if "start_time" not in ad_config:
             ad_config["start_time"] = time.time()
