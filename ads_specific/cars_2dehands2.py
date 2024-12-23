@@ -11,7 +11,6 @@ from tools.heuristics.mileage import extract_mileage_from_ad
 
 def create_cars2_bot_message(car: dict, config: dict):
     price_euro = int(car["priceInfo"]["priceCents"] / 100)
-    price_type = car["priceInfo"]["priceType"]
     main_link = config["api_link"].split("/lrp")[0]
     listing_url = main_link + car["vipUrl"]
     lat = car["location"]["latitude"]
@@ -58,24 +57,34 @@ def create_cars2_bot_message(car: dict, config: dict):
         mileage=mileage if mileage else mileage_heristics,
         fuel_type=car_attributes.get("fuel"),
     )
+    price_info = get_price_info(price_euro, lowest_price_int, make, model)
 
     seller_active_years, seller_reviews = get_seller_info(seller_name, seller_id)
     seller_active_years = "N/A" if not seller_active_years else seller_active_years
     seller_reviews = "0" if not seller_reviews else seller_reviews
 
-    message = f"#{make.replace("-", "_")}\n"
-    message += f"🚘 {car['title']}\n"
-    message += f"🇧🇪 €{price_euro} ({price_type})\n"
-    message += f"{price_str}\n"
-    message += f"💰 {get_price_info(price_euro, lowest_price_int, make, model)} v5\n"
-    message += f"🛞 {model if model else 'N/A'}\n"
-    message += f"📅 {actual_year}\n"
-    message += f"🛣️ {actual_mileage}\n"
-    message += f"⛽ {fuel}\n"
-    message += f"🚦 {transmission}\n"
+    message = f"{car['title']}\n"
+    message += f"🇧🇪 €{price_euro}\n"
+
+    if price_str and "N/A" not in price_str:
+        message += f"{price_str}\n"
+    if price_info and "N/A" not in price_info:
+        message += f"💰 {price_info} v5\n"
+    if model:
+        message += f"🛞 {model}\n"
+    if actual_year and "N/A" not in actual_year:
+        message += f"📅 {actual_year}\n"
+    if actual_mileage and "N/A" not in actual_mileage:
+        message += f"🛣️ {actual_mileage}\n"
+    if fuel and "N/A" not in fuel:
+        message += f"⛽ {fuel}\n"
+    if transmission and "N/A" not in transmission:
+        message += f"🚦 {transmission}\n"
+
     message += f"📞 {seller_active_years}, {seller_reviews} reviews. {seller_name}\n"
     message += f"📍 {city}, {country}\n"
     message += f"📍 Herent: {distance_herent:.2f} km\n"
     message += f"🗒️ {car['categorySpecificDescription']}\n"
+    message += f"#{make.replace("-", "_")}\n"
 
     return message, picture_url, listing_url, otomoto_url
