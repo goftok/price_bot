@@ -1,28 +1,55 @@
 import time
 import requests
+from typing import Optional, Tuple
 
 from tools.secrets import BOT_TOKEN
 from tools.logger import logger
 from tools.telegram import send_telegram_message
 from tools.secrets import send_errors_to_all_chats
 
-ERROR_CODES = [403, 404]  # 429
-MIN_WAIT_TIME = 60.1  # seconds
+
+ERROR_CODES = [403, 404, 500, 502]  # 429
+MIN_WAIT_TIME = 10.1  # seconds
+RETRY_TIMES = 5
+MAX_ID_LOOKUP = 100
 
 
 def create_autoscout24_url(config: dict) -> str:
-    def get_correct_id_url(query_string: str) -> str:
-        start_id = config["start_id"]
-        for i in range(100):
-            current_id = start_id + i
-            url = f"{config['api_link']}/as24-search-funnel_main-{current_id}/lst.json?{query_string}"
+    """
+    Attempts to construct a valid AutoScout24 URL by iterating over a range of IDs,
+    then returns the first URL that responds with status 200.
+    Raises an exception if no valid URL is found.
+    """
+    start_id = config["start_id"]
+    api_link = config["api_link"]
+    query_params = config["query_params"].copy()
 
+    def try_url_with_retries(url: str) -> bool:
+        """
+        Attempt to GET `url` up to RETRY_TIMES if status is in ERROR_CODES.
+        Sleeps between attempts. Returns True if a 200 status is eventually reached.
+        """
+        for attempt in range(RETRY_TIMES):
             response = requests.get(url)
             if response.status_code == 200:
+                return True
+            if response.status_code not in ERROR_CODES:
+                return False
+            time.sleep(MIN_WAIT_TIME)
+        return False
+
+    def get_correct_id_url(query_string: str) -> Tuple[Optional[str], Optional[int]]:
+        """
+        Iterates over up to MAX_ID_LOOKUP IDs to find a valid (URL, ID).
+        Returns (None, None) if not found.
+        """
+        for i in range(MAX_ID_LOOKUP):
+            current_id = start_id + i
+            url = f"{api_link}/as24-search-funnel_main-{current_id}/lst.json?{query_string}"
+            if try_url_with_retries(url):
                 return url, current_id
         return None, None
 
-    query_params = config["query_params"].copy()
     query_string_parts = []
     for key, value in query_params.items():
         if isinstance(value, list):
@@ -33,9 +60,11 @@ def create_autoscout24_url(config: dict) -> str:
 
     query_string = "&".join(query_string_parts)
 
+    # Attempt to find the correct URL
     url, start_id = get_correct_id_url(query_string)
     if url is None or start_id is None:
-        raise Exception(f"Could not find correct id for url for {config["source"]}")
+        source = config["source"]
+        raise Exception(f"Could not find correct id for url for {source}")
 
     config["start_id"] = start_id
     config["urls"] = url
