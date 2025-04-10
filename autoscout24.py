@@ -8,9 +8,10 @@ from tools.telegram import send_telegram_message
 from tools.secrets import send_errors_to_all_chats
 
 
-ERROR_CODES = [403, 404, 500, 502]  # 429
-MIN_WAIT_TIME = 10.1  # seconds
-RETRY_TIMES = 5
+ERROR_CODES = [403, 404, 500, 502, 504]  # 429
+MIN_WAIT_TIME = 6.1  # seconds
+TIMEOUT = 5
+RETRY_TIMES = 3
 MAX_ID_LOOKUP = 100
 
 
@@ -30,7 +31,7 @@ def create_autoscout24_url(config: dict) -> str:
         Sleeps between attempts. Returns True if a 200 status is eventually reached.
         """
         for attempt in range(RETRY_TIMES):
-            response = requests.get(url)
+            response = requests.get(url, timeout=TIMEOUT)
             if response.status_code == 200:
                 return True
             if response.status_code not in ERROR_CODES:
@@ -75,10 +76,10 @@ def create_autoscout24_url(config: dict) -> str:
 
 def get_ads(url: str, ad_config: dict) -> list:
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=TIMEOUT)
         if response.status_code in ERROR_CODES:
             ad_config["urls"], ad_config["start_id"] = create_autoscout24_url(ad_config)
-            response = requests.get(ad_config["urls"])
+            response = requests.get(ad_config["urls"], timeout=TIMEOUT)
 
         response.raise_for_status()
 
@@ -86,7 +87,7 @@ def get_ads(url: str, ad_config: dict) -> list:
         ads = data["pageProps"]["listings"]
     except Exception as e:
         logger.error(f"Error while get_ads {url}: {e}")
-        send_errors_to_all_chats(e)
+        # send_errors_to_all_chats(e)
         raise e
     return ads, ad_config
 

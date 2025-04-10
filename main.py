@@ -11,7 +11,29 @@ from tools.logger import logger
 from tools.utils import validate_config
 
 LIMIT = 100
-START_ID = 570
+SLEEP_TIME = 10
+LAST_ID_FILE = "./autoscout_lastid.txt"
+DEFAULT_START_ID = 746
+
+
+def read_last_id(file_path: str, default_start_id: int) -> int:
+    """Reads the last used ID from the file or returns the default."""
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r") as f:
+                return int(f.read().strip())
+        except (ValueError, IOError):
+            logger.warning(f"Invalid or missing ID in {file_path}. Using default {default_start_id}.")
+    return default_start_id
+
+
+def write_last_id(last_id: int, file_path: str) -> None:
+    """Writes the updated last used ID to the file."""
+    try:
+        with open(file_path, "w") as f:
+            f.write(str(last_id))
+    except IOError as e:
+        logger.error(f"Failed to write {file_path}: {e}")
 
 
 def main():
@@ -23,14 +45,16 @@ def main():
     logger.info(f"Process PID: {pid}")
 
     config_copy = deepcopy(config)
+    start_id = read_last_id(LAST_ID_FILE, DEFAULT_START_ID)
 
     for ad_config_name in config_copy:
         ad_config = config_copy[ad_config_name]
         validate_config(ad_config)
         ad_config["last_id"] = None
         if "autoscout24" in ad_config_name:
-            ad_config["start_id"] = START_ID
+            ad_config["start_id"] = start_id
             ad_config["urls"], ad_config["start_id"] = create_autoscout24_url(ad_config)
+            write_last_id(ad_config["start_id"], LAST_ID_FILE)
         elif "2dehands" in ad_config_name:
             ad_config["urls"] = create_twodehands_urls(ad_config)
 
@@ -46,7 +70,7 @@ def run_with_restart():
         except Exception as e:
             logger.error(f"Main function crashed: {e}")
             logger.info("Reloading configuration and restarting in 5 seconds...")
-            time.sleep(10)
+            time.sleep(SLEEP_TIME)
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ def test_get_seller_info1():
     seller_name = "Yunus Ben Ammar"
     seller_id = 52501439
     active_years, ervaringen = get_seller_info(seller_name, seller_id)
-    assert active_years == "2 maanden" and ervaringen is None
+    assert active_years == "7 maanden" and ervaringen == 1
 
 
 def test_get_seller_info2():

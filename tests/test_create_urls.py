@@ -1,7 +1,7 @@
 from urllib.parse import urlparse, parse_qs
 
 
-from tools.utils import create_urls
+from twodehands import create_twodehands_urls
 
 config = {
     "source": "cars-2dehands4",
@@ -26,7 +26,7 @@ config = {
 
 
 def test_create_urls():
-    urls = create_urls(config, limit=30)
+    urls = create_twodehands_urls(config, limit=30)
 
     assert len(urls) == config["url_numbers"]
     print(urls)

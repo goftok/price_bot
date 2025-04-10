@@ -98,9 +98,9 @@ example_dict = {
 
 
 def test_create_cars_bot_message1():
-    message, _, _, _ = create_cars_bot_message(example_dict, config["cars_2dehands_1"])
+    message, _, _, _ = create_cars_bot_message(example_dict, config["cars_2dehands_4"])
     print(message)
-    assert "Year: 2008\n" in message
+    assert "📅 2008\n" in message
 
 
 def test_create_cars_bot_message2():
@@ -109,15 +109,15 @@ def test_create_cars_bot_message2():
         if attribute == {"key": "constructionYear", "value": "2008", "values": ["2008"]}:
             example_dict_copy["attributes"].remove(attribute)
             break
-    message, _, _, _ = create_cars_bot_message(example_dict_copy, config["cars_2dehands_1"])
+    message, _, _, _ = create_cars_bot_message(example_dict_copy, config["cars_2dehands_4"])
     print(message)
-    assert "Year: 2008 (regex)" in message
+    assert "📅 2008 (regex)" in message
 
 
 def test_create_cars_bot_message3():
-    message, _, _, _ = create_cars_bot_message(example_dict, config["cars_2dehands_1"])
+    message, _, _, _ = create_cars_bot_message(example_dict, config["cars_2dehands_4"])
     print(message)
-    assert "Km: 160000 km\n" in message
+    assert "🛣️ 160000 km\n" in message
 
 
 def test_create_cars_bot_message4():
@@ -126,6 +126,6 @@ def test_create_cars_bot_message4():
         if attribute == {"key": "mileage", "value": "160000", "unit": "km", "values": ["160000"]}:
             example_dict_copy["attributes"].remove(attribute)
             break
-    message, _, _, _ = create_cars_bot_message(example_dict_copy, config["cars_2dehands_1"])
+    message, _, _, _ = create_cars_bot_message(example_dict_copy, config["cars_2dehands_4"])
     print(message)
-    assert "Km: 160000 km (regex)" in message
+    assert "🛣️ 160000 km (regex)" in message

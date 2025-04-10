@@ -17,10 +17,10 @@ from tools.heuristics.year import extract_year_from_ad
 from tools.heuristics.mileage import extract_mileage_from_ad
 
 LIMIT = 100
-SLEEP_TIME = 10.1  # seconds
+SLEEP_TIME = 0.9  # seconds
 RETRY_TIME = 60  # seconds
-MIN_WAIT_TIME = 60.1  # seconds
-ERROR_CODES = [502, 504]  # 429
+MIN_WAIT_TIME = 6.1  # seconds
+ERROR_CODES = [403, 404, 500, 502, 504]  # 429
 
 
 def create_twodehands_urls(config: dict, limit: int = 100) -> list:
@@ -56,7 +56,7 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
             # time.sleep(randint(0, SLEEP_TIME))
             time.sleep(SLEEP_TIME)
 
-            # check if error code is 502 and sleep for 10 seconds
+            # check if error codes and retry
             if response.status_code in ERROR_CODES:
                 logger.warning(f"Warning: {response.status_code} for URL {url}")
                 time.sleep(RETRY_TIME)
@@ -78,7 +78,7 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
                 break
 
         except Exception as e:
-            logger.error(f"Error while get_ads {url}: {e}")
+            # logger.error(f"Error while get_ads {url}: {e}")
             send_errors_to_all_chats(e)
             raise e
 

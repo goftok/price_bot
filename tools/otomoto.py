@@ -13,7 +13,7 @@ YEAR_RANGE = 1
 PLN_EURO_EXCHANGE_RATE = 4.3
 LIMIT_OF_CHEAPEST_OFFERS = 8
 MILEAGE_RANGE = 30000
-OTOMOTO_SLEEP_TIME = 1
+OTOMOTO_SLEEP_TIME = 0.1
 COEFFICIENT = 2
 
 BASE_URL = "https://www.otomoto.pl/graphql"
@@ -172,12 +172,9 @@ def create_otomoto_url(
     # GraphQL constant variables
     variables = {
         "after": None,
-        "click2BuyExperimentId": "",
-        "click2BuyExperimentVariant": "",
         "experiments": [{"key": "MCTA-1463", "variant": "a"}, {"key": "MCTA-1617", "variant": "a"}],
         "filters": filters,
         "includeCepik": True,
-        "includeClick2Buy": False,
         "includeFiltersCounters": False,
         "includeNewPromotedAds": False,
         "includePriceEvaluation": True,
@@ -210,7 +207,7 @@ def create_otomoto_url(
     # GraphQL extensions (persisted query)
     extensions = {
         "persistedQuery": {
-            "sha256Hash": "2f70d16e54e9735832ff29804d407e123b7c9e3a2b4d37a1909342e21f87d4ae",
+            "sha256Hash": "1a840f0ab7fbe2543d0d6921f6c963de8341e04a4548fd1733b4a771392f900a",
             "version": 1,
         }
     }
@@ -289,7 +286,23 @@ def query_otomoto_and_get_average_price(
     mileage: Optional[int],
     fuel_type: Optional[str],
 ) -> tuple:
-    api_url = create_otomoto_url(make=make, model=model, year=year, mileage=mileage, fuel_type=fuel_type)
+    """
+    Query otomoto API and get average price of the car
+
+    :param make: str: make of the car
+    :param model: str: model of the car
+    :param year: int: year of the car
+    :param mileage: int: mileage of the car
+    :param fuel_type: str: fuel type of the car
+
+    :return: tuple: otomoto url, average price string, lowest price integer
+    """
+
+    try:
+        api_url = create_otomoto_url(make=make, model=model, year=year, mileage=mileage, fuel_type=fuel_type)
+    except Exception as e:
+        logger.error(f"Error creating otomoto url: {e}")
+        return None, str(e), 0
 
     try:
         response = requests.get(api_url, headers=headers)
@@ -323,14 +336,19 @@ def query_otomoto_and_get_average_price(
             raise ValueError("'totalCount' field missing in 'advertSearch'")
 
         if data["data"]["advertSearch"]["totalCount"] < NUMBER_OF_RANDOM_OFFERS:
-            api_url = create_otomoto_url(
-                make=make,
-                model=model,
-                year=year,
-                mileage=mileage,
-                fuel_type=fuel_type,
-                coefficient=COEFFICIENT,
-            )
+            try:
+                api_url = create_otomoto_url(
+                    make=make,
+                    model=model,
+                    year=year,
+                    mileage=mileage,
+                    fuel_type=fuel_type,
+                    coefficient=COEFFICIENT,
+                )
+            except Exception as e:
+                logger.error(f"Error creating otomoto url: {e}")
+                return None, str(e), 0
+
             response = requests.get(api_url, headers=headers)
             response.raise_for_status()
             data = response.json()
