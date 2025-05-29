@@ -1,0 +1,3 @@
+[build]
+builder = "nixpacks"
+buildCommand = "poetry install"
