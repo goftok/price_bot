@@ -2,40 +2,40 @@
 from ads_specific.cars_2dehands2 import create_cars2_bot_message
 
 # from ads_specific.cars_2dehands3 import create_cars3_bot_message
-# from ads_specific.cars_autoscout24 import create_cars_autoscout_bot_message
+from ads_specific.cars_autoscout24 import create_cars_autoscout_bot_message
 from tools.secrets import CHAT_ID4  # CHAT_ID1, CHAT_ID2, CHAT_ID7
 
 config = {
-    # "cars_autoscout24_1": {
-    #     "source": "cars-autoscout24-1",
-    #     "min_price": None,
-    #     "max_price": 15000,
-    #     "min_year": None,
-    #     "max_year": None,
-    #     "min_mileage": None,
-    #     "max_mileage": None,
-    #     "chat_id": CHAT_ID4,
-    #     "not_allowed_models": None,
-    #     "allowed_models": None,
-    #     "is_automatic_transmission": None,
-    #     "url_numbers": None,
-    #     "function_for_message": create_cars_autoscout_bot_message,
-    #     "api_link": "https://www.autoscout24.com/_next/data",
-    #     "max_distance_nijmegen": None,
-    #     "max_distance_leuven": None,
-    #     "query_params": {
-    #         "adage": "1",
-    #         "atype": "C",
-    #         "custtype": "P",
-    #         "cy": "B",
-    #         "damaged_listings": "exclude",
-    #         "desc": "1",
-    #         # "search_id": "ubtoa4cjq4",
-    #         "sort": "age",
-    #         "source": "listpage_pagination",
-    #         "ustate": "N,U",
-    #     },
-    # },
+    "cars_autoscout24_1": {
+        "source": "cars-autoscout24-1",
+        "min_price": None,
+        "max_price": 15000,
+        "min_year": None,
+        "max_year": None,
+        "min_mileage": None,
+        "max_mileage": None,
+        "chat_id": CHAT_ID4,
+        "not_allowed_models": None,
+        "allowed_models": None,
+        "is_automatic_transmission": None,
+        "url_numbers": None,
+        "function_for_message": create_cars_autoscout_bot_message,
+        "api_link": "https://www.autoscout24.com/_next/data",
+        "max_distance_nijmegen": None,
+        "max_distance_leuven": None,
+        "query_params": {
+            "adage": "1",
+            "atype": "C",
+            "custtype": "P",
+            "cy": "B",
+            "damaged_listings": "exclude",
+            "desc": "1",
+            # "search_id": "ubtoa4cjq4",
+            "sort": "age",
+            "source": "listpage_pagination",
+            "ustate": "N,U",
+        },
+    },
     "cars_2dehands_4": {
         "source": "cars-2dehands4",
         "min_price": None,

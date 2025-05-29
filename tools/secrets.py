@@ -7,6 +7,7 @@ from tools.logger import logger
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+CONFIG_TO_USE = os.getenv("CONFIG_TO_USE")
 CHAT_ID1 = os.getenv("CHAT_ID1")
 CHAT_ID2 = os.getenv("CHAT_ID2")
 CHAT_ID3 = os.getenv("CHAT_ID3")
@@ -17,7 +18,10 @@ CHAT_ID7 = os.getenv("CHAT_ID7")
 
 
 if not BOT_TOKEN or not CHAT_ID1:
-    raise Exception("BOT_TOKEN or ADMIN_ID is not set")
+    raise Exception("BOT_TOKEN or CHAT_ID1 is not set")
+
+if not CONFIG_TO_USE:
+    raise Exception("CONFIG_TO_USE is not set")
 
 if not CHAT_ID2:
     logger.warning("WARNING: CHAT_ID2 is not set.")

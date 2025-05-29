@@ -1,6 +1,5 @@
 import time
 import json
-import requests
 
 # from random import randint
 
@@ -8,6 +7,7 @@ from tools.secrets import BOT_TOKEN
 from tools.destination import NIJMEGEN, LEUVEN, calculate_driving_distance
 from tools.logger import logger
 from tools.secrets import send_errors_to_all_chats
+from tools.scraper import scraper
 from tools.telegram import send_telegram_message
 from tools.utils import get_int_from_itemId
 from tools.utils import convert_transmition
@@ -52,7 +52,7 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
     last_id = config["last_id"]
     for url in urls:
         try:
-            response = requests.get(url)
+            response = scraper.get(url)
             # time.sleep(randint(0, SLEEP_TIME))
             time.sleep(SLEEP_TIME)
 
@@ -60,7 +60,7 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
             if response.status_code in ERROR_CODES:
                 logger.warning(f"Warning: {response.status_code} for URL {url}")
                 time.sleep(RETRY_TIME)
-                response = requests.get(url)
+                response = scraper.get(url)
 
             response.raise_for_status()
             data = response.json()

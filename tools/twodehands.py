@@ -1,6 +1,7 @@
-import requests
 from bs4 import BeautifulSoup
 from typing import Tuple, Optional
+
+from tools.scraper import scraper
 
 base_url = "https://www.2dehands.be/u"
 
@@ -17,7 +18,7 @@ def get_seller_info(seller_name: str, seller_id: int) -> Tuple[Optional[str], Op
     seller_name = seller_name.replace(" ", "-")
 
     url = f"{base_url}/{seller_name}/{seller_id}/"
-    response = requests.get(url)
+    response = scraper.get(url)
 
     if response.status_code != 200:
         return None, None

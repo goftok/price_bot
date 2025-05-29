@@ -2,10 +2,10 @@ import json
 import time
 import random
 import brotli
-import requests
 import urllib.parse
 from typing import Optional
 
+from tools.scraper import scraper
 from tools.logger import logger
 
 NUMBER_OF_RANDOM_OFFERS = 5
@@ -242,7 +242,7 @@ def get_average_price_str(offers: list) -> str:
         url = create_eval_price_url(advert_id)
         # console.print(url)
 
-        response = requests.get(url, headers=headers)
+        response = scraper.get(url, headers=headers)
         response.raise_for_status()
 
         time.sleep(OTOMOTO_SLEEP_TIME)
@@ -305,7 +305,7 @@ def query_otomoto_and_get_average_price(
         return None, str(e), 0
 
     try:
-        response = requests.get(api_url, headers=headers)
+        response = scraper.get(api_url, headers=headers)
         response.raise_for_status()
         # print(response.status_code)
         # print(response.headers)
@@ -349,7 +349,7 @@ def query_otomoto_and_get_average_price(
                 logger.error(f"Error creating otomoto url: {e}")
                 return None, str(e), 0
 
-            response = requests.get(api_url, headers=headers)
+            response = scraper.get(api_url, headers=headers)
             response.raise_for_status()
             data = response.json()
 

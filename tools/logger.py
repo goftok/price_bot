@@ -1,9 +1,10 @@
+import os
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 main_dir = Path(__file__).resolve().parent.parent
-log_file_path = main_dir / "output.log"
+log_file_path = main_dir / f"output{os.getpid()}.log"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

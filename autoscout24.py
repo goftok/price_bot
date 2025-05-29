@@ -1,8 +1,8 @@
 import time
-import requests
 from typing import Optional, Tuple
 
 from tools.secrets import BOT_TOKEN
+from tools.scraper import scraper
 from tools.logger import logger
 from tools.telegram import send_telegram_message
 from tools.secrets import send_errors_to_all_chats
@@ -31,7 +31,7 @@ def create_autoscout24_url(config: dict) -> str:
         Sleeps between attempts. Returns True if a 200 status is eventually reached.
         """
         for attempt in range(RETRY_TIMES):
-            response = requests.get(url, timeout=TIMEOUT)
+            response = scraper.get(url, timeout=TIMEOUT)
             if response.status_code == 200:
                 return True
             if response.status_code not in ERROR_CODES:
@@ -76,10 +76,10 @@ def create_autoscout24_url(config: dict) -> str:
 
 def get_ads(url: str, ad_config: dict) -> list:
     try:
-        response = requests.get(url, timeout=TIMEOUT)
+        response = scraper.get(url, timeout=TIMEOUT)
         if response.status_code in ERROR_CODES:
             ad_config["urls"], ad_config["start_id"] = create_autoscout24_url(ad_config)
-            response = requests.get(ad_config["urls"], timeout=TIMEOUT)
+            response = scraper.get(ad_config["urls"], timeout=TIMEOUT)
 
         response.raise_for_status()
 

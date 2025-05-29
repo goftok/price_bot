@@ -10,6 +10,8 @@ from autoscout24 import create_autoscout24_url, autoscout24_main
 from tools.logger import logger
 from tools.utils import validate_config
 
+from tools.secrets import CONFIG_TO_USE
+
 LIMIT = 100
 SLEEP_TIME = 10
 LAST_ID_FILE = "./autoscout_lastid.txt"
@@ -47,20 +49,20 @@ def main():
     config_copy = deepcopy(config)
     start_id = read_last_id(LAST_ID_FILE, DEFAULT_START_ID)
 
-    for ad_config_name in config_copy:
-        ad_config = config_copy[ad_config_name]
-        validate_config(ad_config)
-        ad_config["last_id"] = None
-        if "autoscout24" in ad_config_name:
-            ad_config["start_id"] = start_id
-            ad_config["urls"], ad_config["start_id"] = create_autoscout24_url(ad_config)
-            write_last_id(ad_config["start_id"], LAST_ID_FILE)
-        elif "2dehands" in ad_config_name:
-            ad_config["urls"] = create_twodehands_urls(ad_config)
+    ad_config = config_copy[CONFIG_TO_USE]
+    validate_config(ad_config)
+    ad_config["last_id"] = None
+    if "autoscout24" in CONFIG_TO_USE:
+        ad_config["start_id"] = start_id
+        ad_config["urls"], ad_config["start_id"] = create_autoscout24_url(ad_config)
+        write_last_id(ad_config["start_id"], LAST_ID_FILE)
+        while True:
+            autoscout24_main(config_copy)
 
-    while True:
-        autoscout24_main(config_copy)
-        twodehands_main(config_copy)
+    elif "2dehands" in CONFIG_TO_USE:
+        ad_config["urls"] = create_twodehands_urls(ad_config)
+        while True:
+            twodehands_main(config_copy)
 
 
 def run_with_restart():

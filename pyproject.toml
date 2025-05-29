@@ -6,7 +6,7 @@ authors = ["Ilya Dashkevich <94009854+goftok@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
+python = ">=3.13,<4.0"
 requests = "^2.31.0"
 rich = "^13.6.0"
 python-dotenv = "^1.0.0"
