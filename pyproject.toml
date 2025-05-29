@@ -6,7 +6,7 @@ authors = ["Ilya Dashkevich <94009854+goftok@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.13,<4.0"
+python = ">=3.12,<4.0"
 requests = "^2.31.0"
 rich = "^13.6.0"
 python-dotenv = "^1.0.0"
@@ -17,6 +17,7 @@ pre-commit = "^3.7.0"
 pytest = "^8.2.1"
 brotli = "^1.1.0"
 sqlalchemy = "^2.0.36"
+cloudscraper = "^1.2.71"
 
 
 [build-system]
