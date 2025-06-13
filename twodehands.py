@@ -79,7 +79,7 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
 
         except Exception as e:
             # logger.error(f"Error while get_ads {url}: {e}")
-            send_errors_to_all_chats(e)
+            # send_errors_to_all_chats(e)
             raise e
 
     config["last_id"] = last_id
@@ -231,7 +231,7 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
         return last_found_ad_id
     except Exception as e:
         logger.error(f"Error fetching data: {e}")
-        send_telegram_message(BOT_TOKEN, config["chat_id"], f"Error fetching data. Check logs for more info. {e}")
+        # send_telegram_message(BOT_TOKEN, config["chat_id"], f"Error fetching data. Check logs for more info. {e}")
         return config["last_id"]
 
 
