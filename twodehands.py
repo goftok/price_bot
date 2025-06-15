@@ -235,33 +235,30 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
         return config["last_id"]
 
 
-def twodehands_main(config: dict):
+def twodehands_main(ad_config: dict):
     cache_ads = {}
-    for ad_config_name in config:
-        if "2dehands" not in ad_config_name:
-            continue
-        ad_config = config[ad_config_name]
-        query_params = json.dumps(ad_config["query_params"], sort_keys=True)
-        cache_key = f"{ad_config['api_link']}_{ad_config['url_numbers']}_{query_params}"
 
-        if cache_key in cache_ads:
-            ads = cache_ads[cache_key]
-            last_id = send_ads(ads=ads, config=ad_config)
-            ad_config["last_id"] = last_id
-            # logger.info("Using cached ads")
-        else:
-            ads = get_ads(urls=ad_config["urls"], config=ad_config, limit=LIMIT)
-            cache_ads[cache_key] = ads
-            # logger.info("Fetched new ads")
+    query_params = json.dumps(ad_config["query_params"], sort_keys=True)
+    cache_key = f"{ad_config['api_link']}_{ad_config['url_numbers']}_{query_params}"
 
-        if "start_time" not in ad_config:
-            ad_config["start_time"] = time.time()
-        else:
-            time_taken = time.time() - ad_config["start_time"]
+    if cache_key in cache_ads:
+        ads = cache_ads[cache_key]
+        last_id = send_ads(ads=ads, config=ad_config)
+        ad_config["last_id"] = last_id
+        # logger.info("Using cached ads")
+    else:
+        ads = get_ads(urls=ad_config["urls"], config=ad_config, limit=LIMIT)
+        cache_ads[cache_key] = ads
+        # logger.info("Fetched new ads")
 
-            if time_taken < MIN_WAIT_TIME:
-                time.sleep(MIN_WAIT_TIME - time_taken)
+    if "start_time" not in ad_config:
+        ad_config["start_time"] = time.time()
+    else:
+        time_taken = time.time() - ad_config["start_time"]
 
-            logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
+        if time_taken < MIN_WAIT_TIME:
+            time.sleep(MIN_WAIT_TIME - time_taken)
 
-            ad_config["start_time"] = time.time()
+        logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
+
+        ad_config["start_time"] = time.time()

@@ -57,12 +57,12 @@ def main():
         ad_config["urls"], ad_config["start_id"] = create_autoscout24_url(ad_config)
         write_last_id(ad_config["start_id"], LAST_ID_FILE)
         while True:
-            autoscout24_main(config_copy)
+            autoscout24_main(ad_config)
 
     elif "2dehands" in CONFIG_TO_USE:
         ad_config["urls"] = create_twodehands_urls(ad_config)
         while True:
-            twodehands_main(config_copy)
+            twodehands_main(ad_config)
 
 
 def run_with_restart():

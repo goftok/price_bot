@@ -173,21 +173,17 @@ def send_ads(config: dict, ads: list):
         raise e
 
 
-def autoscout24_main(config: dict):
-    for ad_config_name in config:
-        if "autoscout24" not in ad_config_name:
-            continue
-        ad_config = config[ad_config_name]
-        ads, ad_config = get_ads(ad_config["urls"], ad_config)
-        send_ads(ads=ads, config=ad_config)
+def autoscout24_main(ad_config: dict):
+    ads, ad_config = get_ads(ad_config["urls"], ad_config)
+    send_ads(ads=ads, config=ad_config)
 
-        if "start_time" not in ad_config:
-            ad_config["start_time"] = time.time()
-        else:
-            time_taken = time.time() - ad_config["start_time"]
+    if "start_time" not in ad_config:
+        ad_config["start_time"] = time.time()
+    else:
+        time_taken = time.time() - ad_config["start_time"]
 
-            if time_taken < MIN_WAIT_TIME:
-                time.sleep(MIN_WAIT_TIME - time_taken)
-            logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
+        if time_taken < MIN_WAIT_TIME:
+            time.sleep(MIN_WAIT_TIME - time_taken)
+        logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
 
-            ad_config["start_time"] = time.time()
+        ad_config["start_time"] = time.time()
