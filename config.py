@@ -9,7 +9,7 @@ config = {
     "cars_autoscout24_1": {
         "source": "cars-autoscout24-1",
         "min_price": None,
-        "max_price": 15000,
+        "max_price": 12000,
         "min_year": None,
         "max_year": None,
         "min_mileage": None,
@@ -39,7 +39,7 @@ config = {
     "cars_2dehands_4": {
         "source": "cars-2dehands4",
         "min_price": None,
-        "max_price": 15000,
+        "max_price": 12000,
         "min_year": None,
         "max_year": None,
         "min_mileage": None,
@@ -63,7 +63,7 @@ config = {
     },
     "cars_2dehands_5": {
         "source": "cars-2dehands5",
-        "min_price": 15000,
+        "min_price": 12000,
         "max_price": 30000,
         "min_year": None,
         "max_year": None,
