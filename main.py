@@ -43,6 +43,9 @@ def main():
     tprint("Price Bot")
     logger.info("IP used for the bot is {}".format(response.json()["origin"]))
 
+    if not CONFIG_TO_USE:
+        raise EnvironmentError("CONFIG_TO_USE should be defined")
+
     pid = os.getpid()
     logger.info(f"Process PID: {pid}")
 

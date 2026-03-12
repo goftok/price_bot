@@ -3,7 +3,7 @@ import time
 import random
 import brotli
 import urllib.parse
-from typing import Optional
+from typing import Optional, Tuple
 
 from tools.scraper import scraper
 from tools.logger import logger
@@ -103,7 +103,7 @@ def create_otomoto_url(
     year: Optional[str],
     mileage: Optional[str],
     fuel_type: Optional[str],
-    coefficient: Optional[float] = 1,
+    coefficient: float = 1,
 ) -> str:
 
     # Adding necessary make filter
@@ -120,37 +120,37 @@ def create_otomoto_url(
 
     # Optional year filter
     if year:
-        if not isinstance(year, str):
-            raise ValueError("Year type must be an string")
+        if isinstance(year, str):
+            try:
+                year_int = int(year)
+            except ValueError:
+                raise ValueError("Year must be convertable to an integer")
+        else:
+            year_int = year
 
-        # check if it is possible t0 convert to int
-        try:
-            year = int(year)
-        except ValueError:
-            raise ValueError("Year must be convertable to an integer")
-
-        if year < 1900 or year > 2025:
+        if year_int < 1900 or year_int > 2025:
             raise ValueError("Year must be between 1900 and 2025")
 
-        year_from = year - (YEAR_RANGE * coefficient)
-        year_to = min(2025, year + (YEAR_RANGE * coefficient))
+        year_from = year_int - (YEAR_RANGE * coefficient)
+        year_to = min(2025, year_int + (YEAR_RANGE * coefficient))
         filters.append({"name": "filter_float_year:from", "value": str(year_from)})
         filters.append({"name": "filter_float_year:to", "value": str(year_to)})
 
     # Optional mileage filter
     if mileage:
         if isinstance(mileage, str):
-            # check if it is possible to convert to int
             try:
-                mileage = int(mileage)
+                mileage_int = int(mileage)
             except ValueError:
                 raise ValueError("Mileage must be convertable to an integer")
+        else:
+            mileage_int = mileage
 
-        if mileage < 0 or mileage > 1000000:
+        if mileage_int < 0 or mileage_int > 1000000:
             raise ValueError("Mileage must be between 0 and 1000000")
 
-        mileage_from = max(0, mileage - (MILEAGE_RANGE * coefficient))
-        mileage_to = mileage + (MILEAGE_RANGE * coefficient)
+        mileage_from = max(0, mileage_int - (MILEAGE_RANGE * coefficient))
+        mileage_to = mileage_int + (MILEAGE_RANGE * coefficient)
         filters.append({"name": "filter_float_mileage:from", "value": str(mileage_from)})
         filters.append({"name": "filter_float_mileage:to", "value": str(mileage_to)})
 
@@ -172,11 +172,18 @@ def create_otomoto_url(
     # GraphQL constant variables
     variables = {
         "after": None,
-        "experiments": [{"key": "MCTA-1463", "variant": "a"}, {"key": "MCTA-1617", "variant": "a"}],
+        "experiments": [
+            {"key": "MCTA-1463", "variant": "a"},
+            {"key": "CARS-80473", "variant": "a"},
+            {"key": "CARS-80474", "variant": "b"},
+            {"key": "CARS-81954", "variant": "a"},
+            {"key": "CARS-64661", "variant": "b"},
+        ],
         "filters": filters,
         "includeCepik": True,
         "includeFiltersCounters": False,
         "includeNewPromotedAds": False,
+        "includePremiumTopAd": False,
         "includePriceEvaluation": True,
         "includePromotedAds": False,
         "includeRatings": False,
@@ -187,6 +194,7 @@ def create_otomoto_url(
         "parameters": [
             "make",
             "offer_type",
+            "show_pir",
             "fuel_type",
             "gearbox",
             "country_origin",
@@ -200,14 +208,14 @@ def create_otomoto_url(
             "year",
         ],
         "promotedInput": {},
-        "searchTerms": None,
+        "searchTerms": [],
         "sortBy": "filter_float_price:asc",
     }
 
     # GraphQL extensions (persisted query)
     extensions = {
         "persistedQuery": {
-            "sha256Hash": "1a840f0ab7fbe2543d0d6921f6c963de8341e04a4548fd1733b4a771392f900a",
+            "sha256Hash": "882d8ec6a66393b2fa72842a707b38c3f4efbbd63d10edb2f4d40b773c344adf",
             "version": 1,
         }
     }
@@ -226,7 +234,7 @@ def create_otomoto_url(
     return url
 
 
-def get_average_price_str(offers: list) -> str:
+def get_average_price_str(offers: list) -> Tuple[str, int]:
 
     lower_price_list = []
     higher_price_list = []
@@ -282,8 +290,8 @@ def get_average_price_str(offers: list) -> str:
 def query_otomoto_and_get_average_price(
     make: str,
     model: str,
-    year: Optional[int],
-    mileage: Optional[int],
+    year: Optional[str],
+    mileage: Optional[str],
     fuel_type: Optional[str],
 ) -> tuple:
     """
@@ -291,8 +299,8 @@ def query_otomoto_and_get_average_price(
 
     :param make: str: make of the car
     :param model: str: model of the car
-    :param year: int: year of the car
-    :param mileage: int: mileage of the car
+    :param year: str: year of the car
+    :param mileage: str: mileage of the car
     :param fuel_type: str: fuel type of the car
 
     :return: tuple: otomoto url, average price string, lowest price integer

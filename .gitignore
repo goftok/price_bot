@@ -163,3 +163,4 @@ cython_debug/
 *.txt
 node_modules/
 test.py
+.vscode

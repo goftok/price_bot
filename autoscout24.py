@@ -9,10 +9,10 @@ from tools.secrets import send_errors_to_all_chats
 
 
 ERROR_CODES = [403, 404, 500, 502, 504]  # 429
-MIN_WAIT_TIME = 6.1  # seconds
+MIN_WAIT_TIME = 10
 TIMEOUT = 5
-RETRY_TIMES = 3
-MAX_ID_LOOKUP = 100
+RETRY_TIMES = 2
+MAX_ID_LOOKUP = 1000
 
 
 def create_autoscout24_url(config: dict) -> str:
@@ -25,19 +25,23 @@ def create_autoscout24_url(config: dict) -> str:
     api_link = config["api_link"]
     query_params = config["query_params"].copy()
 
-    def try_url_with_retries(url: str) -> bool:
+    def try_url_with_retries(url: str) -> Optional[bool]:
         """
         Attempt to GET `url` up to RETRY_TIMES if status is in ERROR_CODES.
         Sleeps between attempts. Returns True if a 200 status is eventually reached.
         """
         for attempt in range(RETRY_TIMES):
+            time.sleep(MIN_WAIT_TIME)
             response = scraper.get(url, timeout=TIMEOUT)
             if response.status_code == 200:
                 return True
-            if response.status_code not in ERROR_CODES:
+            elif response.status_code == 404:
                 return False
-            time.sleep(MIN_WAIT_TIME)
-        return False
+            elif response.status_code == 429:
+                print(f"Rate limit exceeded for URL: {url}. Retrying...")
+                time.sleep(MIN_WAIT_TIME * (attempt + 1))
+                continue
+        return None
 
     def get_correct_id_url(query_string: str) -> Tuple[Optional[str], Optional[int]]:
         """
@@ -47,8 +51,13 @@ def create_autoscout24_url(config: dict) -> str:
         for i in range(MAX_ID_LOOKUP):
             current_id = start_id + i
             url = f"{api_link}/as24-search-funnel_main-{current_id}/lst.json?{query_string}"
-            if try_url_with_retries(url):
+            result = try_url_with_retries(url)
+            if result is True:
                 return url, current_id
+            elif result is False:
+                continue
+            elif result is None:
+                return None, None
         return None, None
 
     query_string_parts = []
@@ -74,7 +83,7 @@ def create_autoscout24_url(config: dict) -> str:
     return url, start_id
 
 
-def get_ads(url: str, ad_config: dict) -> list:
+def get_ads(url: str, ad_config: dict) -> Tuple[list, dict]:
     try:
         response = scraper.get(url, timeout=TIMEOUT)
         if response.status_code in ERROR_CODES:

@@ -199,8 +199,10 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
             )
             if is_last_url and idx > len(ads) * 0.9:
                 send_errors_to_all_chats(
-                    f"WARNING for '{config['source']}'! Ad found at '{idx}' size: '{len(ads)}. "
-                    "Increase number of urls to check."
+                    Exception(
+                        f"WARNING for '{config['source']}'! Ad found at '{idx}' size: '{len(ads)}'. "
+                        f"Increase number of urls to check."
+                    )
                 )
         filtered_ads.append(ad)
 
@@ -215,6 +217,9 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
     # don't send the adds from the first iteration
     if config["last_id"] is None:
         return last_found_ad_id
+
+    if not BOT_TOKEN:
+        raise Exception("BOT_TOKEN is not defined in secrets.py")
 
     # send the adds
     try:
