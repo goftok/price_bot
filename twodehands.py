@@ -5,7 +5,7 @@ import json
 
 from tools.secrets import BOT_TOKEN
 from tools.destination import NIJMEGEN, LEUVEN, calculate_driving_distance
-from tools.logger import logger
+from tools.console import console
 from tools.secrets import send_errors_to_all_chats
 from tools.scraper import scraper
 from tools.telegram import send_telegram_message
@@ -58,7 +58,7 @@ def get_ads(urls: list, config: dict, limit: int) -> list:
 
             # check if error codes and retry
             if response.status_code in ERROR_CODES:
-                logger.warning(f"Warning: {response.status_code} for URL {url}")
+                console.print(f"Warning: {response.status_code} for URL {url}")
                 time.sleep(RETRY_TIME)
                 response = scraper.get(url)
 
@@ -193,7 +193,7 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
             continue
 
         if config["last_id"]:
-            logger.info(
+            console.print(
                 f"Found ad: '{get_int_from_itemId(ad['itemId'])}' for "
                 f"'{config['source']}' with index of '{idx}' size: '{len(ads)}'"
             )
@@ -212,7 +212,7 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
         return config["last_id"]
 
     last_found_ad_id = get_int_from_itemId(sorted_ads[0]["itemId"])
-    logger.info(f"Last found add id for '{config['source']}': {last_found_ad_id}")
+    console.print(f"Last found add id for '{config['source']}': {last_found_ad_id}")
 
     # don't send the adds from the first iteration
     if config["last_id"] is None:
@@ -235,7 +235,7 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
             )
         return last_found_ad_id
     except Exception as e:
-        logger.error(f"Error fetching data: {e}")
+        console.print(f"Error fetching data: {e}")
         # send_telegram_message(BOT_TOKEN, config["chat_id"], f"Error fetching data. Check logs for more info. {e}")
         return config["last_id"]
 
@@ -264,6 +264,6 @@ def twodehands_main(ad_config: dict):
         if time_taken < MIN_WAIT_TIME:
             time.sleep(MIN_WAIT_TIME - time_taken)
 
-        logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
+        console.print(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
 
         ad_config["start_time"] = time.time()

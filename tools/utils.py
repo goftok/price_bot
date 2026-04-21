@@ -1,6 +1,6 @@
 from typing import Optional
 
-from tools.logger import logger
+from tools.console import console
 
 
 template_config = {
@@ -97,4 +97,4 @@ def validate_config(config: dict) -> None:
     if extra_keys:
         raise ValueError(f"Extra keys found in configuration: {extra_keys}")
 
-    logger.info(f"Configuration for {config['source']} is valid")
+    console.print(f"Configuration for {config['source']} is valid")

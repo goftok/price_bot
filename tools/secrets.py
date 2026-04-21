@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 from tools.telegram import send_telegram_message
-from tools.logger import logger
+from tools.console import console
 
 load_dotenv()
 
@@ -24,27 +24,27 @@ if not CONFIG_TO_USE:
     raise Exception("CONFIG_TO_USE is not set")
 
 if not CHAT_ID2:
-    logger.warning("WARNING: CHAT_ID2 is not set.")
+    console.print("WARNING: CHAT_ID2 is not set.")
     CHAT_ID2 = CHAT_ID1
 
 if not CHAT_ID3:
-    logger.warning("WARNING: CHAT_ID3 is not set.")
+    console.print("WARNING: CHAT_ID3 is not set.")
     CHAT_ID3 = CHAT_ID1
 
 if not CHAT_ID4:
-    logger.warning("WARNING: CHAT_ID4 is not set.")
+    console.print("WARNING: CHAT_ID4 is not set.")
     CHAT_ID4 = CHAT_ID1
 
 if not CHAT_ID5:
-    logger.warning("WARNING: CHAT_ID5 is not set.")
+    console.print("WARNING: CHAT_ID5 is not set.")
     CHAT_ID5 = CHAT_ID1
 
 if not CHAT_ID6:
-    logger.warning("WARNING: CHAT_ID6 is not set.")
+    console.print("WARNING: CHAT_ID6 is not set.")
     CHAT_ID6 = CHAT_ID1
 
 if not CHAT_ID7:
-    logger.warning("WARNING: CHAT_ID7 is not set.")
+    console.print("WARNING: CHAT_ID7 is not set.")
     CHAT_ID7 = CHAT_ID1
 
 

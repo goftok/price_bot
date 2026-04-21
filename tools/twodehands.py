@@ -26,7 +26,9 @@ def get_seller_info(seller_name: str, seller_id: int) -> Tuple[Optional[str], Op
     soup = BeautifulSoup(response.text, "html.parser")
 
     # Find the active years information
-    active_years_elem = soup.find("div", class_="item", string=lambda x: x and "actief op 2dehands" in x)
+    active_years_elem = soup.find(
+        "div", class_="item", string=lambda x: x and "actief op 2dehands" in x  # type: ignore
+    )
     active_years = None
     if active_years_elem:
         active_years = active_years_elem.text.replace("actief op 2dehands", "").strip()

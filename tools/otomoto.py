@@ -6,7 +6,7 @@ import urllib.parse
 from typing import Optional, Tuple
 
 from tools.scraper import scraper
-from tools.logger import logger
+from tools.console import console
 
 NUMBER_OF_RANDOM_OFFERS = 5
 YEAR_RANGE = 1
@@ -309,7 +309,7 @@ def query_otomoto_and_get_average_price(
     try:
         api_url = create_otomoto_url(make=make, model=model, year=year, mileage=mileage, fuel_type=fuel_type)
     except Exception as e:
-        logger.error(f"Error creating otomoto url: {e}")
+        console.print(f"Error creating otomoto url: {e}")
         return None, str(e), 0
 
     try:
@@ -333,7 +333,7 @@ def query_otomoto_and_get_average_price(
             else:
                 data = response.json()
         except Exception as e:
-            logger.error(f"General error with decompression: {e}")
+            console.print(f"General error with decompression: {e}")
             data = response.json()
 
         if "data" not in data or data["data"] is None:
@@ -354,7 +354,7 @@ def query_otomoto_and_get_average_price(
                     coefficient=COEFFICIENT,
                 )
             except Exception as e:
-                logger.error(f"Error creating otomoto url: {e}")
+                console.print(f"Error creating otomoto url: {e}")
                 return None, str(e), 0
 
             response = scraper.get(api_url, headers=headers)
@@ -371,7 +371,7 @@ def query_otomoto_and_get_average_price(
         edges = data["data"]["advertSearch"]["edges"]
         otomoto_url = data["data"]["advertSearch"]["url"]
     except Exception as e:
-        logger.error(f"Error getting otomoto ads: {e}")
+        console.print(f"Error getting otomoto ads: {e}")
         return None, str(e), 0
 
     try:
@@ -379,7 +379,7 @@ def query_otomoto_and_get_average_price(
         # console.print(price_str)
         return otomoto_url, price_str, lowest_price_int
     except Exception as e:
-        logger.error(f"Error getting otomoto price: {e}")
+        console.print(f"Error getting otomoto price: {e}")
         return otomoto_url, str(e), 0
 
 

@@ -1,7 +1,8 @@
 import re
+from typing import Optional
 
 
-def extract_mileage_from_ad(text: str) -> str:
+def extract_mileage_from_ad(text: str) -> Optional[str]:
     # Regex pattern to capture mileage between 10,000 and 999,999
     main_regex = r"\b(?:\d{1,3}[.,])?\d{1,3}[.,]?\d{3}\s*(?:km|kms|KM|Km|Kms|KMs|kilometers|kilometres|k m)?\b"
 
@@ -17,7 +18,7 @@ def extract_mileage_from_ad(text: str) -> str:
     return mileage
 
 
-def extract_mileage_using_regex(regex: str, text: str) -> str:
+def extract_mileage_using_regex(regex: str, text: str) -> Optional[str]:
     mileage_pattern = re.compile(regex, re.IGNORECASE)
     matches = mileage_pattern.findall(text)
 

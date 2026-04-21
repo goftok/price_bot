@@ -5,13 +5,13 @@ from urllib.parse import urlencode
 
 from tools.secrets import BOT_TOKEN
 from tools.scraper import scraper
-from tools.logger import logger
+from tools.console import console
 from tools.telegram import send_telegram_message
 from tools.secrets import send_errors_to_all_chats
 
 
 ERROR_CODES = [403, 404, 500, 502, 504]  # 429
-MIN_WAIT_TIME = 1
+MIN_WAIT_TIME = 5
 TIMEOUT = 5
 RETRY_TIMES = 2
 
@@ -87,7 +87,7 @@ def create_autoscout24_url(config: dict) -> str:
     url = f"{api_link}/as24-search-funnel_main-{start_id}/lst.json?{query_string}"
     config["urls"] = url
 
-    logger.info(f"Found last id for '{config['source']}': {start_id}")
+    console.print(f"Found last id for '{config['source']}': {start_id}")
     return url
 
 
@@ -103,7 +103,7 @@ def get_ads(url: str, ad_config: dict) -> Tuple[list, dict]:
         data = response.json()
         ads = data["pageProps"]["listings"]
     except Exception as e:
-        logger.error(f"Error while get_ads {url}: {e}")
+        console.print(f"Error while get_ads {url}: {e}")
         # send_errors_to_all_chats(e)
         raise e
     return ads, ad_config
@@ -160,7 +160,7 @@ def send_ads(config: dict, ads: list):
                 sorted_ads = ads[:idx]
                 break
             elif idx == len(ads) - 1:
-                logger.warning(f"Could not find last id {config['last_id']} in ads")
+                console.print(f"Could not find last id {config['last_id']} in ads")
                 config["last_id"] = ads[0]["id"]
                 sorted_ads = []
 
@@ -172,7 +172,7 @@ def send_ads(config: dict, ads: list):
         if not filtered_ads:
             return
 
-        logger.info(f"Last found add id for '{config['source']}': {config["last_id"]}")
+        console.print(f"Last found add id for '{config['source']}': {config["last_id"]}")
 
         for ad in filtered_ads:
             message, picture_url, listing_url, otomoto_url = config["function_for_message"](ad, config)
@@ -186,7 +186,7 @@ def send_ads(config: dict, ads: list):
             )
 
     except Exception as e:
-        logger.error(f"Error while send_ads : {e}")
+        console.print(f"Error while send_ads : {e}")
         send_errors_to_all_chats(e)
         raise e
 
@@ -202,6 +202,6 @@ def autoscout24_main(ad_config: dict):
 
         if time_taken < MIN_WAIT_TIME:
             time.sleep(MIN_WAIT_TIME - time_taken)
-        logger.info(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
+        console.print(f"Time taken for {ad_config['source']}: {time.time() - ad_config['start_time']}")
 
         ad_config["start_time"] = time.time()

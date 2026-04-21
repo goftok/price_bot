@@ -1,7 +1,8 @@
 import re
+from typing import Optional
 
 
-def extract_year_from_ad(text: str) -> str:
+def extract_year_from_ad(text: str) -> Optional[str]:
     MIN_YEAR = 1980
     MAX_YEAR = 2025
 

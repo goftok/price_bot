@@ -52,7 +52,7 @@ config = {
         "url_numbers": None,
         "function_for_message": create_cars_autoscout_bot_message,
         "api_link": "https://www.autoscout24.com/_next/data",
-        "ui_link": "https://www.autoscout24.be/lst",
+        "ui_link": "https://www.autoscout24.be/nl/lst",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
         "query_params": {

@@ -2,7 +2,7 @@ import json
 import requests
 from typing import Optional
 
-from tools.logger import logger
+from tools.console import console
 
 
 def send_telegram_message(
@@ -49,5 +49,5 @@ def send_telegram_message(
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        logger.error(f"Failed to send message: {e}")
+        console.print(f"Failed to send message: {e}")
         return {"error": str(e)}
