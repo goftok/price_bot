@@ -11,7 +11,7 @@ from tools.secrets import send_errors_to_all_chats
 
 
 ERROR_CODES = [403, 404, 500, 502, 504]  # 429
-MIN_WAIT_TIME = 5
+MIN_WAIT_TIME = 10
 TIMEOUT = 5
 RETRY_TIMES = 2
 
