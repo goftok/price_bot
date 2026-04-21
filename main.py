@@ -14,28 +14,6 @@ from tools.secrets import CONFIG_TO_USE
 
 LIMIT = 100
 SLEEP_TIME = 10
-LAST_ID_FILE = "./autoscout_lastid.txt"
-DEFAULT_START_ID = 746
-
-
-def read_last_id(file_path: str, default_start_id: int) -> int:
-    """Reads the last used ID from the file or returns the default."""
-    if os.path.exists(file_path):
-        try:
-            with open(file_path, "r") as f:
-                return int(f.read().strip())
-        except (ValueError, IOError):
-            logger.warning(f"Invalid or missing ID in {file_path}. Using default {default_start_id}.")
-    return default_start_id
-
-
-def write_last_id(last_id: int, file_path: str) -> None:
-    """Writes the updated last used ID to the file."""
-    try:
-        with open(file_path, "w") as f:
-            f.write(str(last_id))
-    except IOError as e:
-        logger.error(f"Failed to write {file_path}: {e}")
 
 
 def main():
@@ -50,15 +28,14 @@ def main():
     logger.info(f"Process PID: {pid}")
 
     config_copy = deepcopy(config)
-    start_id = read_last_id(LAST_ID_FILE, DEFAULT_START_ID)
 
     ad_config = config_copy[CONFIG_TO_USE]
     validate_config(ad_config)
     ad_config["last_id"] = None
+
     if "autoscout24" in CONFIG_TO_USE:
-        ad_config["start_id"] = start_id
-        ad_config["urls"], ad_config["start_id"] = create_autoscout24_url(ad_config)
-        write_last_id(ad_config["start_id"], LAST_ID_FILE)
+        ad_config["urls"] = create_autoscout24_url(ad_config)
+        print(ad_config["urls"])
         while True:
             autoscout24_main(ad_config)
 

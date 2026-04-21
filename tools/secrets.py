@@ -49,5 +49,12 @@ if not CHAT_ID7:
 
 
 def send_errors_to_all_chats(e: Exception) -> None:
+    if not BOT_TOKEN:
+        raise Exception("NO BOT_TOKEN check .env")
+
     for chat_id in [CHAT_ID4]:  # , CHAT_ID1, CHAT_ID2]:
+        if not chat_id:
+            raise Exception("no value for chat_id, check .env")
+
+        chat_id = int(chat_id)
         send_telegram_message(BOT_TOKEN, chat_id, f"bot error: {e}")

@@ -21,6 +21,7 @@ config = {
         "url_numbers": None,
         "function_for_message": create_cars_autoscout_bot_message,
         "api_link": "https://www.autoscout24.com/_next/data",
+        "ui_link": "https://www.autoscout24.be/nl/lst",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
         "query_params": {
@@ -28,7 +29,7 @@ config = {
             "atype": "C",
             "custtype": "P",
             "cy": "B",
-            "damaged_listings": "exclude",
+            "damaged_listing": "exclude",
             "desc": "1",
             # "search_id": "ubtoa4cjq4",
             "sort": "age",
@@ -51,6 +52,7 @@ config = {
         "url_numbers": None,
         "function_for_message": create_cars_autoscout_bot_message,
         "api_link": "https://www.autoscout24.com/_next/data",
+        "ui_link": "https://www.autoscout24.be/lst",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
         "query_params": {
@@ -81,6 +83,7 @@ config = {
         "url_numbers": 6,
         "function_for_message": create_cars2_bot_message,
         "api_link": "https://www.2dehands.be/lrp/api/search",
+        "ui_link": "",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
         "query_params": {
@@ -106,6 +109,7 @@ config = {
         "url_numbers": 6,
         "function_for_message": create_cars2_bot_message,
         "api_link": "https://www.2dehands.be/lrp/api/search",
+        "ui_link": "",
         "max_distance_nijmegen": None,
         "max_distance_leuven": None,
         "query_params": {

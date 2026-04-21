@@ -18,6 +18,7 @@ template_config = {
     "url_numbers": (type(None), int),
     "function_for_message": callable,
     "api_link": str,
+    "ui_link": str,
     "max_distance_nijmegen": (type(None), int),
     "max_distance_leuven": (type(None), int),
     "query_params": dict,
