@@ -45,7 +45,7 @@ config = {
         "max_year": None,
         "min_mileage": None,
         "max_mileage": None,
-        "chat_id": CHAT_ID4,
+        "chat_id": CHAT_ID5,
         "not_allowed_models": None,
         "allowed_models": None,
         "is_automatic_transmission": None,
