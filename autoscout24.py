@@ -9,7 +9,6 @@ from tools.console import console
 from tools.telegram import send_telegram_message
 from tools.secrets import send_errors_to_all_chats
 
-
 ERROR_CODES = [403, 404, 500, 502, 504]  # 429
 MIN_WAIT_TIME = 7
 TIMEOUT = 5
@@ -87,7 +86,7 @@ def create_autoscout24_url(config: dict) -> str:
     url = f"{api_link}/as24-search-funnel_main-{start_id}/lst.json?{query_string}"
     config["urls"] = url
 
-    console.print(f"Found last id for '{config['source']}': {start_id}")
+    console.print(f"Found build id for '{config['source']}': {start_id}")
     return url
 
 
@@ -150,19 +149,11 @@ def send_ads(config: dict, ads: list):
         if not BOT_TOKEN:
             raise Exception("NO BOT_TOKEN check .env")
 
-        if config["last_id"] is None:
-            config["last_id"] = ads[1]["id"]
-
         sorted_ads = []
-        for idx, ad in enumerate(ads):
-            if ad["id"] == config["last_id"]:
-                config["last_id"] = ads[0]["id"]
-                sorted_ads = ads[:idx]
-                break
-            elif idx == len(ads) - 1:
-                console.print(f"Could not find last id {config['last_id']} in ads")
-                config["last_id"] = ads[0]["id"]
-                sorted_ads = []
+        for ad in ads:
+            if ad not in config["tracked"]:
+                sorted_ads.append(ad)
+                config["tracked"].append(ad)
 
         filtered_ads = []
         for ad in sorted_ads:
@@ -172,7 +163,7 @@ def send_ads(config: dict, ads: list):
         if not filtered_ads:
             return
 
-        console.print(f"Last found add id for '{config['source']}': {config["last_id"]}")
+        console.print(f"Last found add id for '{config['source']}': {sorted_ads[-1]["id"]}")
 
         for ad in filtered_ads:
             message, picture_url, listing_url, otomoto_url = config["function_for_message"](ad, config)

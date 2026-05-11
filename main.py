@@ -32,6 +32,7 @@ def main():
     ad_config = config_copy[CONFIG_TO_USE]
     validate_config(ad_config)
     ad_config["last_id"] = None
+    ad_config["tracked"] = []
 
     if "autoscout24" in CONFIG_TO_USE:
         ad_config["urls"] = create_autoscout24_url(ad_config)

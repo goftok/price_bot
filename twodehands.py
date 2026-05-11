@@ -241,20 +241,7 @@ def send_ads(ads: list, config: dict, is_last_url: bool = False) -> int:
 
 
 def twodehands_main(ad_config: dict):
-    cache_ads = {}
-
-    query_params = json.dumps(ad_config["query_params"], sort_keys=True)
-    cache_key = f"{ad_config['api_link']}_{ad_config['url_numbers']}_{query_params}"
-
-    if cache_key in cache_ads:
-        ads = cache_ads[cache_key]
-        last_id = send_ads(ads=ads, config=ad_config)
-        ad_config["last_id"] = last_id
-        # logger.info("Using cached ads")
-    else:
-        ads = get_ads(urls=ad_config["urls"], config=ad_config, limit=LIMIT)
-        cache_ads[cache_key] = ads
-        # logger.info("Fetched new ads")
+    get_ads(urls=ad_config["urls"], config=ad_config, limit=LIMIT)
 
     if "start_time" not in ad_config:
         ad_config["start_time"] = time.time()
